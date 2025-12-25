@@ -348,7 +348,7 @@
       const N_all = allArr.length;
       const idxAll = lowerBound(allArr, sec);
       const rankAll = idxAll + 1;
-      const slowerAll = Math.max(N_all - rankAll);
+      const slowerAll = Math.max(N_all - idxAll);
       const prAll = (slowerAll / N_all * 100).toFixed(2);
 
       const blockAll = document.createElement("div");
@@ -389,7 +389,7 @@
       const N_m = maleArr.length;
       const idxM = lowerBound(maleArr, sec);
       const rankM = idxM + 1;
-      const slowerM = Math.max(0, N_m - rankM);
+      const slowerM = Math.max(0, N_m - idxM);
       const prM = (slowerM / N_m * 100).toFixed(2);
 
       const blockM = document.createElement("div");
@@ -407,7 +407,7 @@
       const N_f = femaleArr.length;
       const idxF = lowerBound(femaleArr, sec);
       const rankF = idxF + 1;
-      const slowerF = Math.max(0, N_f - rankF);
+      const slowerF = Math.max(0, N_f - idxF);
       const prF = (slowerF / N_f * 100).toFixed(2);
 
       const blockF = document.createElement("div");
@@ -438,7 +438,7 @@
 
       const idx = lowerBound(arr, sec);
       const rank = idx + 1;
-      const slower = Math.max(0, N - rank);
+      const slower = Math.max(0, N - idx);
       const pr = (slower / N * 100);
 
       rows.push({
