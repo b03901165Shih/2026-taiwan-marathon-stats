@@ -464,7 +464,8 @@
       listBlock.appendChild(line);
     } else {
       // 依 PR 高→低排列
-      rows.sort((a, b) => b.pr - a.pr);
+      rows.sort((a, b) => a.groupName.localeCompare(b.groupName, "zh-Hant")); // 字母順序
+
 
       const table = document.createElement("table");
       table.style.width = "100%";
@@ -622,6 +623,7 @@
   document.getElementById("btnCheckPr").addEventListener("click", lookupPrForTime);
 
   window.addEventListener("load", init);
-</script>
+  </script>
+
 </body>
 </html>
