@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <head>
-  <title>2025台北馬拉松完賽成績查詢 - 名次統計工具</title>
-  <meta name="description" content="即時查詢2025台北馬拉松完賽成績、42K名次排名、個人成績分析。支援姓名、分組搜尋。">
-  <meta name="keywords" content="2025台北馬拉松,台北馬完賽成績,42K名次,21K名次,馬拉松查詢">
+  <title>2025-2026北部重要馬拉松賽事 - 名次統計工具</title>
+  <meta name="description" content="即時查詢馬拉松完賽分布、42K名次排名、個人成績分析。支援姓名、分組搜尋。">
+  <meta name="keywords" content="馬拉松完賽分布,完賽成績,42K名次,21K名次,馬拉松查詢">
   </head>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -84,23 +84,25 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>🏃‍♂️ 2025 台北馬拉松分析器</h1>
-  <div style="color:#6b7280;font-size:17px;">成績來源: Bravelog. 以大會成績(Official Time)為準.</div>
+  <h1>🏃‍♂️ 2026 北部重要馬拉松賽事 - 名次統計工具</h1>
+  <div style="color:#6b7280;font-size:17px;">成績來源: Brav elog. 以大會成績(Official Time)為準.</div>
 
-  <!-- 資料模組 -->
-  <script src="marathon_bins_and_pr.js"></script>
+  <!-- 新資料載入：支援無限賽事擴充！ -->
+  <script src="2025_tpe_data.js"></script>
+  <script src="2026_chartered_tpe_data.js"></script>
 
   <!-- 區塊 1：互動式 histogram -->
   <h2>1. 分組完賽時間分布 (histogram)</h2>
   <div class="card">
     <div class="row">
+      <div class="label">賽事：</div>
+      <select id="eventSelect"></select>
+
       <div class="label">賽別：</div>
       <select id="raceSelect"></select>
 
       <div class="label">分組：</div>
       <select id="groupSelect"></select>
-
-      <button id="btnDraw">更新圖表</button>
     </div>
     <div id="chartContainer">
       <canvas id="histCanvas"></canvas>
@@ -111,18 +113,14 @@
   <h2>2. 輸入時間，查總場 / 性別 / 分組排名 & PR</h2>
   <div class="card">
     <div class="row">
+      <div class="label">賽事：</div>
+      <select id="eventForPr"></select>
+
       <div class="label">賽別：</div>
-      <select id="raceForPr">
-        <option value="HM">HM (半馬)</option>
-        <option value="MA">MA (全馬)</option>
-      </select>
+      <select id="raceForPr"></select>
 
       <div class="label">分組類型：</div>
-      <select id="groupForPr">
-        <option value="一般">一般</option>
-        <option value="視障">視障</option>
-        <option value="輪椅">輪椅</option>
-      </select>
+      <select id="groupForPr"></select>
     </div>
 
     <div class="row">
@@ -142,11 +140,11 @@
   <h2>3. 輸入 PR 值，查剛好超越的時間</h2>
   <div class="card">
     <div class="row">
+      <div class="label">賽事：</div>
+      <select id="eventForPrReverse"></select>
+
       <div class="label">賽別：</div>
-      <select id="raceForPrReverse">
-        <option value="HM">HM (半馬)</option>
-        <option value="MA">MA (全馬)</option>
-      </select>
+      <select id="raceForPrReverse"></select>
 
       <div class="label">分組：</div>
       <select id="groupForPrReverse">
@@ -166,9 +164,50 @@
 </div>
 
 <script>
-  let groupsByRace = {}; // { HM: [...], MA: [...] }
+  // 🌟 新架構：自動偵測所有賽事！
+  let marathonData = window.marathonData || {};
+  let raceHierarchy = {};
   let histChart = null;
 
+  // ---------- 🔧 核心工具函式（改進版） ----------
+  function getAllEvents() {
+    return Object.keys(window.marathonData).map(id => window.marathonData[id].metadata);
+  }
+
+  function getEventData(eventId) {
+    return window.marathonData[eventId];
+  }
+
+  function getEventIdFromName(eventName) {
+    return getAllEvents().find(e => e.event_name === eventName)?.event_id;
+  }
+
+  // ✅ 修復：正確解析完整 key
+  function parseFullKey(fullKey) {
+    // 🎯 新格式：eventId__raceType__group （三個 __）
+    // 範例：
+    // "2025_tpe__HM__男視障選手"           → {eventId: "2025_tpe", raceType: "HM", group: "男視障選手"}
+    // "2026_chartered_tpe__全程馬拉松(42.195KM)__男60歲+" → {eventId: "2026_chartered_tpe", raceType: "全程馬拉松(42.195KM)", group: "男60歲+"}
+    
+    const parts = fullKey.split('__', 3);
+    if (parts.length !== 3) {
+      console.error("❌ Key 格式錯誤，必須有兩個 __ 分隔：", fullKey);
+      return null;
+    }
+    
+    const eventId = parts[0];   // 2025_tpe
+    const raceType = parts[1];  // HM 或 全程馬拉松(42.195KM)
+    const group = parts[2];     // 男視障選手 或 男60歲+
+    
+    return { eventId, raceType, group };
+  }
+
+
+  // ✅ 產生完整 key
+  function getFullKey(eventId, raceType, group) {
+    // 產生新格式：eventId__raceType__group
+    return `${eventId}__${raceType}__${group}`;
+  }
   // ---------- 小工具 ----------
   function classifyGroup(rawGroup) {
     const g = String(rawGroup);
@@ -218,43 +257,92 @@
     return lo;
   }
 
-  function buildGroupsByRace() {
-    groupsByRace = {};
-    for (const key of Object.keys(binsAndPr)) {
-      const [race, group] = key.split("__");
-      if (!groupsByRace[race]) groupsByRace[race] = new Set();
-      groupsByRace[race].add(group);
-    }
-    for (const race of Object.keys(groupsByRace)) {
-      const arr = Array.from(groupsByRace[race]);
-      arr.sort((a,b) => {
-        if (a === "ALL") return -1;
-        if (b === "ALL") return 1;
-        return a.localeCompare(b, "zh-Hant");
+  // ---------- 🏗️ 自動建立階層結構 ----------
+  function buildRaceHierarchy() {
+    raceHierarchy = {};
+    
+    getAllEvents().forEach(event => {
+      const eventId = event.event_id;
+      const eventName = event.event_name;
+      raceHierarchy[eventName] = {};
+      
+      const data = getEventData(eventId);
+      if (!data?.binsAndPr) return;
+      
+      Object.keys(data.binsAndPr).forEach(fullKey => {
+        const parsed = parseFullKey(fullKey);
+        if (!parsed) return;
+        
+        const { raceType, group } = parsed;
+        if (!raceHierarchy[eventName][raceType]) {
+          raceHierarchy[eventName][raceType] = new Set();
+        }
+        raceHierarchy[eventName][raceType].add(group);
       });
-      groupsByRace[race] = arr;
-    }
-  }
-
-  function fillRaceAndGroupSelects() {
-    const raceSelect = document.getElementById("raceSelect");
-    raceSelect.innerHTML = "";
-    const races = Object.keys(groupsByRace).sort();
-    races.forEach(r => {
-      const opt1 = document.createElement("option");
-      opt1.value = r;
-      opt1.textContent = r;
-      raceSelect.appendChild(opt1);
+      
+      // 排序分組
+      Object.keys(raceHierarchy[eventName]).forEach(raceType => {
+        const groups = Array.from(raceHierarchy[eventName][raceType]);
+        groups.sort((a, b) => a === "ALL" ? -1 : (b === "ALL" ? 1 : a.localeCompare(b, "zh-Hant")));
+        raceHierarchy[eventName][raceType] = groups;
+      });
     });
-    if (races.length > 0) {
-      updateGroupSelect(races[0]);
+    
+    console.log("🏗️ 階層結構：", raceHierarchy);
+  }
+
+  // ---------- 🎛️ 選擇器填充 ----------
+  function fillEventSelects() {
+    const events = getAllEvents();
+    
+    // 只填充賽事選單
+    ["eventSelect", "eventForPr", "eventForPrReverse"].forEach(selectId => {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      select.innerHTML = "";
+      events.forEach(event => {
+        const opt = document.createElement("option");
+        opt.value = event.event_name;
+        opt.textContent = event.event_name;
+        opt.dataset.eventId = event.event_id;
+        select.appendChild(opt);
+      });
+    });
+    
+    // ✅ 確保分組類型選單永遠有值
+    const groupForPr = document.getElementById("groupForPr");
+    if (groupForPr && !groupForPr.querySelector('option')) {
+      groupForPr.innerHTML = `
+        <option value="一般" selected>一般</option>
+        <option value="輪椅">輪椅</option>
+        <option value="視障">視障</option>
+      `;
     }
   }
 
-  function updateGroupSelect(race) {
-    const groupSelect = document.getElementById("groupSelect");
+
+  function updateRaceSelect(eventName, selectId) {
+    const raceSelect = document.getElementById(selectId);
+    if (!raceSelect) return;
+    
+    raceSelect.innerHTML = "";
+    const raceTypes = Object.keys(raceHierarchy[eventName] || {}).sort();
+    
+    raceTypes.forEach(rt => {
+      const opt = document.createElement("option");
+      opt.value = rt;
+      opt.textContent = rt;
+      raceSelect.appendChild(opt);
+    });
+  }
+
+  function updateGroupSelect(eventName, raceType, selectId) {
+    const groupSelect = document.getElementById(selectId);
+    if (!groupSelect) return;
+    
     groupSelect.innerHTML = "";
-    const groups = groupsByRace[race] || [];
+    const groups = raceHierarchy[eventName]?.[raceType] || [];
+    
     groups.forEach(g => {
       const opt = document.createElement("option");
       opt.value = g;
@@ -263,31 +351,49 @@
     });
   }
 
-  // ---------- histogram 繪圖 ----------
+  
+  // ✅ **新增：分組類型選擇器**
+  function updateGroupTypeSelect(eventName, raceType) {
+    // groupForPr 是固定的：一般/輪椅/視障，不需要更新
+    console.log("分組類型已預設：一般/輪椅/視障");
+  }
+  
+  // 📊 Histogram
   function drawHistogram() {
-    const race = document.getElementById("raceSelect").value;
+    const eventName = document.getElementById("eventSelect").value;
+    const raceType = document.getElementById("raceSelect").value;
     const group = document.getElementById("groupSelect").value;
-    const key = `${race}__${group}`;
-
-    const obj = binsAndPr[key];
-    if (!obj || !obj.histogram_5min) {
-      alert("找不到對應資料：" + key);
+    
+    if (!raceType || !group) {
+      alert("請先選擇賽別和分組");
       return;
     }
+    
+    const eventSelect = document.getElementById("eventSelect");
+    const eventId = eventSelect.selectedOptions[0].dataset.eventId;
+    const fullKey = getFullKey(eventId, raceType, group);
+    
+    const eventData = getEventData(eventId);
+    const obj = eventData?.binsAndPr?.[fullKey];
+    
+    if (!obj?.histogram_5min) {
+      alert(`找不到資料：${eventName} / ${raceType} / ${group}`);
+      return;
+    }
+    
     const bins = obj.histogram_5min;
-
     const labels = bins.map(b => b.start_time);
     const counts = bins.map(b => b.count);
-
+    
     const ctx = document.getElementById("histCanvas").getContext("2d");
     if (histChart) histChart.destroy();
-
+    
     histChart = new Chart(ctx, {
       type: "bar",
       data: {
         labels,
         datasets: [{
-          label: `${race} / ${group}`,
+          label: `${eventName} / ${raceType} / ${group}`,
           data: counts,
           backgroundColor: "rgba(37,99,235,0.75)",
           borderColor: "rgba(30,64,175,1)",
@@ -305,243 +411,231 @@
               label: (ctx) => {
                 const i = ctx.dataIndex;
                 const b = bins[i];
-                return [
-                  `人數: ${b.count}`,
-                  `區間: ${b.start_time} ~ ${b.end_time}`
-                ];
+                return [`人數: ${b.count}`, `區間: ${b.start_time} ~ ${b.end_time}`];
               }
             }
           }
         },
         scales: {
-          x: {
-            title: { display: true, text: "完賽時間 (5 分鐘區間)" },
-            ticks: { maxRotation: 45, minRotation: 45 }
-          },
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: "人數" }
-          }
+          x: { title: { display: true, text: "完賽時間 (5 分鐘區間)" }, ticks: { maxRotation: 45, minRotation: 45 } },
+          y: { beginAtZero: true, title: { display: true, text: "人數" } }
         }
       }
     });
   }
 
-  // ---------- 查總場 & 性別 & 各分組排名 / PR ----------
-
   function lookupPrForTime() {
     const sec = parseTimeInputs();
     if (sec == null) return;
 
-    const race = document.getElementById("raceForPr").value;       // HM / MA
-    const bucketType = document.getElementById("groupForPr").value; // 一般 / 視障 / 輪椅
+    const eventName = document.getElementById("eventForPr").value;
+    const raceType = document.getElementById("raceForPr").value;
+    const bucketType = document.getElementById("groupForPr").value;
+    const eventSelect = document.getElementById("eventForPr");
+    if (!eventSelect?.selectedOptions[0]?.dataset.eventId) {
+      alert("請先選擇賽事");
+      return;
+    }
+    
+    const eventId = eventSelect.selectedOptions[0].dataset.eventId;
+    const eventData = getEventData(eventId);
     const resultArea = document.getElementById("prResultArea");
     resultArea.innerHTML = "";
 
-    // 1) 全場 HM__ALL / MA__ALL
-    const allKey = `${race}__ALL`;
-    const allObj = binsAndPr[allKey];
+    if (!eventData?.binsAndPr) {
+      resultArea.innerHTML = `<div class="result-block">找不到賽事資料</div>`;
+      return;
+    }
 
-    if (!allObj || !allObj.sorted_seconds) {
-      const warn = document.createElement("div");
-      warn.className = "result-block";
-      warn.textContent = `找不到 ${allKey} 的 sorted_seconds。`;
-      resultArea.appendChild(warn);
-    } else {
+    // 🔧 安全數字格式化函式
+    function safeLocale(n) {
+      return (n || 0).toLocaleString();
+    }
+
+    console.log("🔍 賽事ID:", eventId);
+    console.log("🔍 賽別:", raceType);
+    console.log("🔍 所有 keys:", Object.keys(eventData.binsAndPr || {}));
+    // 1) 全場 ALL ✅ 安全檢查
+    const allKey = getFullKey(eventId, raceType, "ALL");
+    const allObj = eventData.binsAndPr[allKey];
+    
+    console.log("🔍 預期 ALL key:", allKey);
+    console.log("🔍 ALL key 存在？", !!eventData.binsAndPr?.[allKey]);
+    // 在 lookupPrForTime() 開頭加入：
+    console.log("🔍 檢查 ALL key:", allKey, "→", !!eventData.binsAndPr[allKey]);
+
+    // 遍歷時加入 debug：
+    Object.keys(eventData.binsAndPr).forEach(fullKey => {
+      const parsed = parseFullKey(fullKey);
+      if (parsed && parsed.eventId === eventId && parsed.raceType === raceType) {
+        console.log("✅ 找到匹配分組:", parsed.group, classifyGroup(parsed.group));
+      }
+    });
+    
+    
+    if (allObj?.sorted_seconds?.length > 0) {
       const allArr = allObj.sorted_seconds;
       const N_all = allArr.length;
       const idxAll = lowerBound(allArr, sec);
       const rankAll = idxAll + 1;
-      const slowerAll = Math.max(N_all - idxAll);
-      const prAll = (slowerAll / N_all * 100).toFixed(2);
+      const slowerAll = Math.max(0, N_all - idxAll);
+      const prAll = ((slowerAll / N_all) * 100).toFixed(2);
 
       const blockAll = document.createElement("div");
       blockAll.className = "result-block";
       blockAll.innerHTML = `
-        <div class="result-title">${race} / ALL (全場)</div>
-        <div class="result-line">總人數：<span class="value">${N_all.toLocaleString()}</span></div>
+        <div class="result-title">${eventName} / ${raceType} / ALL (全場)</div>
+        <div class="result-line">總人數：<span class="value">${safeLocale(N_all)}</span></div>
         <div class="result-line">你的時間：<span class="value">${secondsToTime(sec)}</span></div>
-        <div class="result-line">總場排名：<span class="value">${rankAll.toLocaleString()}</span></div>
-        <div class="result-line">PR 值：<span class="value">${prAll}%</span>（贏過 ${slowerAll.toLocaleString()} 人）</div>
+        <div class="result-line">總場排名：<span class="value">${safeLocale(rankAll)}</span></div>
+        <div class="result-line">PR 值：<span class="value">${prAll}%</span>（贏過 ${safeLocale(slowerAll)} 人）</div>
       `;
+      resultArea.appendChild(blockAll);
+    } else {
+      const blockAll = document.createElement("div");
+      blockAll.className = "result-block";
+      blockAll.innerHTML = `<div class="result-title">${eventName} / ${raceType} / ALL</div><div class="result-line">無資料</div>`;
       resultArea.appendChild(blockAll);
     }
 
-    // 2) 性別彙總 (在目前 bucketType 中，男/女各自合併)
-    const maleArr = [];
-    const femaleArr = [];
+    // 2) 性別彙總 + 細分組
+    const maleArr = [], femaleArr = [], groupRows = [];
 
-    for (const key of Object.keys(binsAndPr)) {
-      const [keyRace, rawGroup] = key.split("__");
-      if (keyRace !== race) continue;
-      if (rawGroup === "ALL") continue;
-      if (classifyGroup(rawGroup) !== bucketType) continue;
-
-      const obj = binsAndPr[key];
-      if (!obj || !obj.sorted_seconds) continue;
-      const g = String(rawGroup);
-      if (g.includes("男")) {
-        maleArr.push(...obj.sorted_seconds);
-      } else if (g.includes("女")) {
-        femaleArr.push(...obj.sorted_seconds);
+    Object.keys(eventData.binsAndPr).forEach(fullKey => {
+      const parsed = parseFullKey(fullKey);
+      
+      // 🔥 關鍵：先篩 ALL，再篩 bucketType
+      if (!parsed || parsed.eventId !== eventId || parsed.raceType !== raceType) return;
+      if (parsed.group === "ALL") return;  // ✅ 先篩 ALL
+      if (classifyGroup(parsed.group) !== bucketType) return;  // ✅ 再篩分組類型
+      
+      const obj = eventData.binsAndPr[fullKey];
+      
+      console.log(`🔍 分組 ${parsed.group}:`, {
+        hasSortedSeconds: !!obj?.sorted_seconds,
+        length: obj?.sorted_seconds?.length,
+        sample: obj?.sorted_seconds?.slice(0, 3)
+      });
+      
+      if (!obj?.sorted_seconds || obj.sorted_seconds.length === 0) {
+        console.log(`❌ ${parsed.group} 無 sorted_seconds 資料`);
+        return;
       }
-    }
-    maleArr.sort((a,b)=>a-b);
-    femaleArr.sort((a,b)=>a-b);
-
-    if (maleArr.length > 0) {
-      const N_m = maleArr.length;
-      const idxM = lowerBound(maleArr, sec);
-      const rankM = idxM + 1;
-      const slowerM = Math.max(0, N_m - idxM);
-      const prM = (slowerM / N_m * 100).toFixed(2);
-
-      const blockM = document.createElement("div");
-      blockM.className = "result-block";
-      blockM.innerHTML = `
-        <div class="result-title">${race} / ${bucketType} / 男性合計</div>
-        <div class="result-line">總人數：<span class="value">${N_m.toLocaleString()}</span></div>
-        <div class="result-line">排名：<span class="value">${rankM.toLocaleString()}</span></div>
-        <div class="result-line">PR 值：<span class="value">${prM}%</span>（贏過 ${slowerM.toLocaleString()} 人）</div>
-      `;
-      resultArea.appendChild(blockM);
-    }
-
-    if (femaleArr.length > 0) {
-      const N_f = femaleArr.length;
-      const idxF = lowerBound(femaleArr, sec);
-      const rankF = idxF + 1;
-      const slowerF = Math.max(0, N_f - idxF);
-      const prF = (slowerF / N_f * 100).toFixed(2);
-
-      const blockF = document.createElement("div");
-      blockF.className = "result-block";
-      blockF.innerHTML = `
-        <div class="result-title">${race} / ${bucketType} / 女性合計</div>
-        <div class="result-line">總人數：<span class="value">${N_f.toLocaleString()}</span></div>
-        <div class="result-line">排名：<span class="value">${rankF.toLocaleString()}</span></div>
-        <div class="result-line">PR 值：<span class="value">${prF}%</span>（贏過 ${slowerF.toLocaleString()} 人）</div>
-      `;
-      resultArea.appendChild(blockF);
-    }
-
-    // 3) 各細部分組表格
-    const rows = [];
-    for (const key of Object.keys(binsAndPr)) {
-      const [keyRace, rawGroup] = key.split("__");
-      if (keyRace !== race) continue;
-      if (rawGroup === "ALL") continue;
-      if (classifyGroup(rawGroup) !== bucketType) continue;
-
-      const obj = binsAndPr[key];
-      if (!obj || !obj.sorted_seconds) continue;
 
       const arr = obj.sorted_seconds;
       const N = arr.length;
-      if (!N) continue;
+      
+      if (parsed.group.includes("男")) maleArr.push(...arr);
+      else if (parsed.group.includes("女")) femaleArr.push(...arr);
 
       const idx = lowerBound(arr, sec);
       const rank = idx + 1;
       const slower = Math.max(0, N - idx);
-      const pr = (slower / N * 100);
+      const pr = (slower / N) * 100;
+      
+      groupRows.push({ groupName: parsed.group, rank, total: N, pr, slower });
+    });
 
-      rows.push({
-        groupName: rawGroup,
-        rank,
-        total: N,
-        pr,
-        slower
-      });
+    // 男性合計
+    if (maleArr.length > 0) {
+      maleArr.sort((a,b) => a-b);
+      const N_m = maleArr.length;
+      const idxM = lowerBound(maleArr, sec);
+      const rankM = idxM + 1;
+      const slowerM = Math.max(0, N_m - idxM);
+      const prM = ((slowerM / N_m) * 100).toFixed(2);
+
+      const blockM = document.createElement("div");
+      blockM.className = "result-block";
+      blockM.innerHTML = `
+        <div class="result-title">${eventName} / ${raceType} / ${bucketType} / 男性合計</div>
+        <div class="result-line">總人數：<span class="value">${safeLocale(N_m)}</span></div>
+        <div class="result-line">排名：<span class="value">${safeLocale(rankM)}</span></div>
+        <div class="result-line">PR 值：<span class="value">${prM}%</span>（贏過 ${safeLocale(slowerM)} 人）</div>
+      `;
+      resultArea.appendChild(blockM);
     }
 
+    // 女性合計
+    if (femaleArr.length > 0) {
+      femaleArr.sort((a,b) => a-b);
+      const N_f = femaleArr.length;
+      const idxF = lowerBound(femaleArr, sec);
+      const rankF = idxF + 1;
+      const slowerF = Math.max(0, N_f - idxF);
+      const prF = ((slowerF / N_f) * 100).toFixed(2);
+
+      const blockF = document.createElement("div");
+      blockF.className = "result-block";
+      blockF.innerHTML = `
+        <div class="result-title">${eventName} / ${raceType} / ${bucketType} / 女性合計</div>
+        <div class="result-line">總人數：<span class="value">${safeLocale(N_f)}</span></div>
+        <div class="result-line">排名：<span class="value">${safeLocale(rankF)}</span></div>
+        <div class="result-line">PR 值：<span class="value">${prF}%</span>（贏過 ${safeLocale(slowerF)} 人）</div>
+      `;
+      resultArea.appendChild(blockF);
+    }
+  
+    // 細分組表格（完美版）
     const listBlock = document.createElement("div");
     listBlock.className = "result-block";
     const header = document.createElement("div");
     header.className = "result-title";
-    header.textContent = `${race} / ${bucketType} 各細部分組`;
+    header.textContent = `${eventName} / ${raceType} / ${bucketType} 各細部分組`;
     listBlock.appendChild(header);
-    console.log("Debug rows:", rows);  // 看 console 有沒有資料
-    if (rows.length === 0) {
+
+    if (groupRows.length === 0) {
       const line = document.createElement("div");
       line.className = "result-line";
-      line.textContent = "此賽別在這個類型下沒有任何分組資料。";
+      line.textContent = `此賽別「${bucketType}」類型無資料`;
       listBlock.appendChild(line);
     } else {
-      // 依 PR 高→低排列
-      rows.sort((a, b) => a.groupName.localeCompare(b.groupName, "zh-Hant")); // 字母順序
-
-
+      groupRows.sort((a, b) => a.groupName.localeCompare(b.groupName, "zh-Hant"));
       const table = document.createElement("table");
-      table.style.width = "100%";
-      table.style.borderCollapse = "collapse";
-      table.style.fontSize = "17px";   // 表格字體稍微大一點
-
       table.innerHTML = `
         <thead>
           <tr>
-            <th style="text-align:center;padding:4px 6px;border-bottom:1px solid #e5e7eb;font-size:18px;">分組</th>
-            <th style="text-align:center;padding:4px 6px;border-bottom:1px solid #e5e7eb;font-size:18px;">排名</th>
-            <th style="text-align:center;padding:4px 6px;border-bottom:1px solid #e5e7eb;font-size:18px;">總人數</th>
-            <th style="text-align:center;padding:4px 6px;border-bottom:1px solid #e5e7eb;font-size:18px;">PR</th>
-            <th style="text-align:center;padding:4px 6px;border-bottom:1px solid #e5e7eb;font-size:18px;">贏過人數</th>
+            <th style="text-align:left;padding:12px 15px;font-weight:700;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);color:#1f2937;border-bottom:2px solid #e2e8f0;font-size:17px;">分組</th>
+            <th style="padding:12px 15px;font-weight:700;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);color:#1f2937;border-bottom:2px solid #e2e8f0;font-size:17px;">排名</th>
+            <th style="padding:12px 15px;font-weight:700;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);color:#1f2937;border-bottom:2px solid #e2e8f0;font-size:17px;">總人數</th>
+            <th style="padding:12px 15px;font-weight:700;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);color:#1f2937;border-bottom:2px solid #e2e8f0;font-size:17px;">PR</th>
+            <th style="padding:12px 15px;font-weight:700;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);color:#1f2937;border-bottom:2px solid #e2e8f0;font-size:17px;">贏過人數</th>
           </tr>
         </thead>
         <tbody></tbody>
       `;
+      
       const tbody = table.querySelector("tbody");
-
-      rows.forEach(r => {
+      groupRows.forEach(r => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td style="padding:3px 6px;">${r.groupName}</td>
-          <td style="padding:3px 6px;text-align:center;">${r.rank.toLocaleString()}</td>
-          <td style="padding:3px 6px;text-align:center;">${r.total.toLocaleString()}</td>
-          <td style="padding:3px 6px;text-align:center;">${r.pr.toFixed(2)}%</td>
-          <td style="padding:3px 6px;text-align:center;">${r.slower.toLocaleString()}</td>
+          <td style="text-align:left;padding:10px 15px;">${r.groupName}</td>
+          <td style="padding:10px 15px;text-align:center;font-weight:500;">${safeLocale(r.rank)}</td>
+          <td style="padding:10px 15px;text-align:center;font-weight:500;">${safeLocale(r.total)}</td>
+          <td style="padding:10px 15px;text-align:center;color:#059669;font-weight:600;">${r.pr.toFixed(2)}%</td>
+          <td style="padding:10px 15px;text-align:center;font-weight:500;">${safeLocale(r.slower)}</td>
         `;
         tbody.appendChild(tr);
       });
-
+      
+      // 🔥 加上 hover 動畫
+      table.style.cssText = `
+        width: 100%; 
+        border-collapse: collapse; 
+        border-radius: 8px; 
+        overflow: hidden; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        font-size: 17px;
+      `;
+      
       listBlock.appendChild(table);
     }
-
     resultArea.appendChild(listBlock);
-  }
-  
-  // 新增：填入 PR 反查的下拉選單
-  function fillPrReverseSelects() {
-    const raceSelect = document.getElementById("raceForPrReverse");
-    const groupSelect = document.getElementById("groupForPrReverse");
 
-    const races = Object.keys(groupsByRace).sort();
-    raceSelect.innerHTML = "";
-    races.forEach(r => {
-      const opt = document.createElement("option");
-      opt.value = r;
-      opt.textContent = r;
-      raceSelect.appendChild(opt);
-    });
-
-    // 預設第一個 race + ALL
-    if (races.length > 0) {
-      const firstRace = races[0];
-      updatePrReverseGroupSelect(firstRace);
-    }
   }
 
-  function updatePrReverseGroupSelect(race) {
-    const groupSelect = document.getElementById("groupForPrReverse");
-    groupSelect.innerHTML = "";
-    const groups = groupsByRace[race] || [];
-    groups.forEach(g => {
-      const opt = document.createElement("option");
-      opt.value = g;
-      opt.textContent = (g === "ALL") ? "ALL (全場)" : g;
-      groupSelect.appendChild(opt);
-    });
-  }
 
-  // PR 反查邏輯：輸入 PR% → 找剛好超越的時間
+  // ⏱️ PR反查
   function lookupTimeForPr() {
     const prPct = parseFloat(document.getElementById("prInput").value);
     if (isNaN(prPct) || prPct < 0 || prPct > 100) {
@@ -549,55 +643,49 @@
       return;
     }
 
-    const race = document.getElementById("raceForPrReverse").value;
+    const eventName = document.getElementById("eventForPrReverse").value;
+    const raceType = document.getElementById("raceForPrReverse").value;
     const group = document.getElementById("groupForPrReverse").value;
-    const key = `${race}__${group}`;
+    const eventId = document.getElementById("eventForPrReverse").selectedOptions[0].dataset.eventId;
+    const fullKey = getFullKey(eventId, raceType, group);
+    const eventData = getEventData(eventId);
+    const obj = eventData.binsAndPr[fullKey];
     const resultArea = document.getElementById("prReverseResultArea");
     resultArea.innerHTML = "";
 
-    const obj = binsAndPr[key];
-    if (!obj || !obj.sorted_seconds) {
-      const warn = document.createElement("div");
-      warn.className = "result-block";
-      warn.textContent = `找不到 ${key} 的 sorted_seconds`;
-      resultArea.appendChild(warn);
+    if (!obj?.sorted_seconds) {
+      resultArea.innerHTML = `<div class="result-block">找不到 ${fullKey} 的資料</div>`;
       return;
     }
 
     const sortedSeconds = obj.sorted_seconds;
     const N = sortedSeconds.length;
-
     if (N === 0) {
       resultArea.innerHTML = `<div class="result-block">此組別無完賽資料</div>`;
       return;
     }
 
-    // PR = (贏過人數 / 總人數) * 100 → 贏過人數 = PR * 總人數
     const slowerCount = Math.floor((prPct / 100) * N);
-    const targetRank = N - slowerCount;  // 1-based 排名
-
+    const targetRank = N - slowerCount;
+    
     if (targetRank > N) {
-      // PR 太大，沒人能達到
-      const block = document.createElement("div");
-      block.className = "result-block";
-      block.innerHTML = `
-        <div class="result-title">${key}</div>
-        <div class="result-line">總人數：<span class="value">${N.toLocaleString()}</span></div>
-        <div class="pr-time">此 PR (${prPct}%) 需要第 ${targetRank} 名，但只有 ${N} 人，無法達成！</div>
-        <div class="result-line">🏆 請跑更快，拿 ${key} 第一名！</div>
+      resultArea.innerHTML = `
+        <div class="result-block">
+          <div class="result-title">${eventName} / ${raceType} / ${group}</div>
+          <div class="result-line">總人數：<span class="value">${N.toLocaleString()}</span></div>
+          <div class="pr-time">此 PR (${prPct}%) 需要第 ${targetRank} 名，但只有 ${N} 人，無法達成！</div>
+        </div>
       `;
-      resultArea.appendChild(block);
       return;
     }
 
-    // 找到剛好第 targetRank 名的時間（1-based → 0-based index）
     const targetTimeSec = sortedSeconds[targetRank - 1];
     const targetTimeStr = secondsToTime(targetTimeSec);
 
     const block = document.createElement("div");
     block.className = "result-block";
     block.innerHTML = `
-      <div class="result-title">${key}</div>
+      <div class="result-title">${eventName} / ${raceType} / ${group}</div>
       <div class="result-line">總人數：<span class="value">${N.toLocaleString()}</span></div>
       <div class="result-line">目標排名：<span class="value">${targetRank.toLocaleString()}</span> 名</div>
       <div class="pr-time">⏱️ 剛好 ${prPct}% PR 的時間：<span class="value">${targetTimeStr}</span></div>
@@ -606,28 +694,124 @@
     resultArea.appendChild(block);
   }
 
-  // ---------- 初始化 ----------
+  // 🚀 初始化
   function init() {
-    buildGroupsByRace();
-    fillRaceAndGroupSelects();
-    fillPrReverseSelects();
+    console.log("📊 載入賽事：", getAllEvents().map(e => e.event_name));
+    buildRaceHierarchy();
+    fillEventSelects();
+      
+    // 🔥 設定3個區塊預設值
+    setDefaultForAllBlocks();
+    // 🔥 Block1 自動繪製 histogram
     drawHistogram();
   }
 
-  // PR 反查事件
+  function setDefaultForAllBlocks() {
+    const events = getAllEvents();
+    if (!events.length) return;
+    
+    const latestEventName = events[events.length - 1].event_name;
+    const latestEventId = events[events.length - 1].event_id;
+    
+    // Block 1: Histogram
+    setDefaultForBlock1(latestEventName, latestEventId);
+    
+    // Block 2: PR查詢
+    setDefaultForBlock2(latestEventName, latestEventId);
+    
+    // Block 3: PR反查  
+    setDefaultForBlock3(latestEventName, latestEventId);
+  }
+
+  function setDefaultForBlock1(eventName, eventId) {
+    const eventSelect = document.getElementById("eventSelect");
+    const raceSelect = document.getElementById("raceSelect");
+    const groupSelect = document.getElementById("groupSelect");
+    
+    if (eventSelect) {
+      eventSelect.value = eventName;
+      eventSelect.selectedOptions[0].dataset.eventId = eventId;
+    }
+    
+    // 選擇第一個可用賽別
+    updateRaceSelect(eventName, "raceSelect");
+    const firstRaceType = document.getElementById("raceSelect")?.value;
+    if (firstRaceType && groupSelect) {
+      updateGroupSelect(eventName, firstRaceType, "groupSelect");
+    }
+  }
+
+  function setDefaultForBlock2(eventName, eventId) {
+    const eventSelect = document.getElementById("eventForPr");
+    const raceSelect = document.getElementById("raceForPr");
+    
+    if (eventSelect) {
+      eventSelect.value = eventName;
+      eventSelect.selectedOptions[0].dataset.eventId = eventId;
+      updateRaceSelect(eventName, "raceForPr");
+    }
+  }
+
+  function setDefaultForBlock3(eventName, eventId) {
+    const eventSelect = document.getElementById("eventForPrReverse");
+    const raceSelect = document.getElementById("raceForPrReverse");
+    const groupSelect = document.getElementById("groupForPrReverse");
+    
+    if (eventSelect) {
+      eventSelect.value = eventName;
+      eventSelect.selectedOptions[0].dataset.eventId = eventId;
+      updateRaceSelect(eventName, "raceForPrReverse");
+    }
+    
+    const firstRaceType = document.getElementById("raceForPrReverse")?.value;
+    if (firstRaceType && groupSelect) {
+      updateGroupSelect(eventName, firstRaceType, "groupForPrReverse");
+    }
+  }
+
+    // 事件監聽器// Block1 自動更新（選單變更即時繪圖）
+  document.getElementById("eventSelect").addEventListener("change", function(e) {
+    const eventName = e.target.value;
+    updateRaceSelect(eventName, "raceSelect");
+    drawHistogram(); // 自動繪圖
+  });
+
+  document.getElementById("raceSelect").addEventListener("change", function(e) {
+    const eventName = document.getElementById("eventSelect").value;
+    const raceType = e.target.value;
+    updateGroupSelect(eventName, raceType, "groupSelect");
+    drawHistogram(); // 自動繪圖
+  });
+
+  document.getElementById("groupSelect").addEventListener("change", function() {
+    drawHistogram(); // 分組變更也自動繪圖
+  });
+
+  document.getElementById("eventForPr").addEventListener("change", (e) => {
+    const eventName = e.target.value;
+    updateRaceSelect(eventName, "raceForPr");
+  });
+  document.getElementById("raceForPr").addEventListener("change", (e) => {
+    const eventName = document.getElementById("eventForPr").value;
+    updateGroupTypeSelect(eventName, e.target.value);
+  });
+  document.getElementById("btnCheckPr").addEventListener("click", lookupPrForTime);
+
+  document.getElementById("eventForPrReverse").addEventListener("change", (e) => {
+    updateRaceSelect(e.target.value, "raceForPrReverse");
+    const raceType = document.getElementById("raceForPrReverse").value;
+    if (raceType) updateGroupSelect(e.target.value, raceType, "groupForPrReverse");
+  });
   document.getElementById("raceForPrReverse").addEventListener("change", (e) => {
-    updatePrReverseGroupSelect(e.target.value);
+    const eventName = document.getElementById("eventForPrReverse").value;
+    updateGroupSelect(eventName, e.target.value, "groupForPrReverse");
   });
   document.getElementById("btnCheckPrReverse").addEventListener("click", lookupTimeForPr);
 
-  document.getElementById("raceSelect").addEventListener("change", (e) => {
-    updateGroupSelect(e.target.value);
+
+
+  window.addEventListener("DOMContentLoaded", function() {
+    init();
   });
-  document.getElementById("btnDraw").addEventListener("click", drawHistogram);
-  document.getElementById("btnCheckPr").addEventListener("click", lookupPrForTime);
-
-  window.addEventListener("load", init);
-  </script>
-
+</script>
 </body>
-</html>
