@@ -9,11 +9,11 @@ BraveLog 成績頁
     ↓ Selenium
 scrap_result.py
     ↓ .xlsx
-excels/<賽事>_完整成績.xlsx
+Excel（專案根目錄或 excels/）
     ↓ pandas
 extract_excel_result.py
     ↓ .js
-<event_id>_data.js
+data/<event_id>_data.js
     ↓ <script src="...">
 index.html（Chart.js 圖表、排名與 PR 查詢）
 ```
@@ -26,9 +26,9 @@ index.html（Chart.js 圖表、排名與 PR 查詢）
 | `excels/` | 部分賽事的完整成績 Excel；其他賽事 Excel 位於專案根目錄。 |
 | `events_config.json` | 前處理階段的賽事清單：事件 ID、顯示名稱、日期、Excel 名稱、賽別、每個賽別的實際距離、成績來源 URL。 |
 | `extract_excel_result.py` | 將 Excel 轉成網站可直接讀取的資料 JS；同時計算每組 5 分鐘分布與依秒數排序的成績陣列。 |
-| `<event_id>_data.js` | 各賽事獨立的前端資料檔；都會把成績與賽別距離寫到全域 `window.marathonData[event_id]`。 |
+| `data/<event_id>_data.js` | 各賽事獨立的前端資料檔；都會把成績與賽別距離寫到全域 `window.marathonData[event_id]`。 |
+| `assets/` | README 使用的網站介面截圖。 |
 | `index.html` | 純靜態前端。依已載入的 `window.marathonData` 動態建立賽事／賽別／分組選單，顯示圖表、時間查排名與 PR 反查。 |
-| `marathon_bins_and_pr.js` | 舊版或整合用的大型資料檔；目前 `index.html` 沒有載入它，現行網站以各賽事獨立的 `*_data.js` 為準。 |
 
 ## 爬蟲輸出的 Excel 結構
 
@@ -79,7 +79,7 @@ output_file = '2026_<賽事名稱>_完整成績.xlsx'
 python scrap_result.py
 ```
 
-所需套件：`selenium`、`beautifulsoup4`、`pandas`、`openpyxl`，以及可由 Selenium 啟動的 Chrome／ChromeDriver。完成後，將產生的 Excel 放到 `excels/`。
+所需套件：`selenium`、`beautifulsoup4`、`pandas`、`openpyxl`，以及可由 Selenium 啟動的 Chrome／ChromeDriver。完成後可將 Excel 留在專案根目錄，或移至 `excels/` 並在設定檔指定正確路徑。
 
 ### 2. 登記賽事設定
 
@@ -97,12 +97,12 @@ python scrap_result.py
 }
 ```
 
-`id` 必須是唯一且穩定的英文／數字底線 ID；它同時決定輸出的檔案名 `2026_example_data.js` 和前端資料鍵值。
+`id` 必須是唯一且穩定的英文／數字底線 ID；它同時決定輸出的檔案名 `data/2026_example_data.js` 和前端資料鍵值。
 `race_distances_km` 必須涵蓋 `race_types` 的每一項，單位為公里。請查賽事實際路線距離，不要只看 BraveLog 的賽別代碼；例如 Panasonic 的 `10` 實際是 12.5K。半馬統一記為 `21.0975`、全馬為 `42.195`。第 4 區塊只比較距離數值相同的賽別；同賽事的兩個同距離賽別會分別列出。
 
 ### 3. Excel 轉成前端 JavaScript
 
-`extract_excel_result.py` 會讀取 `past_events` 和 `events`，逐場產出 `<id>_data.js`，並將 `race_distances_km` 寫進每場資料的 metadata。只更新一場可執行 `python extract_excel_result.py --event-id 2026_example`。
+`extract_excel_result.py` 會讀取 `past_events` 和 `events`，逐場產出 `data/<id>_data.js`，並將 `race_distances_km` 寫進每場資料的 metadata。只更新一場可執行 `python extract_excel_result.py --event-id 2026_example`。
 
 `excel` 可以寫專案根目錄的檔名、`excels/檔名.xlsx`，或只寫檔名而將檔案放在 `excels/`。之後在專案根目錄執行：
 
@@ -110,14 +110,14 @@ python scrap_result.py
 python extract_excel_result.py
 ```
 
-它會檢查必要欄位、賽別距離對照、排除無效時間，把時間轉成秒數，建立每 5 分鐘直方圖與排序陣列，再輸出 `<id>_data.js` 到專案根目錄。缺少距離設定或 Excel 出現未登記賽別時會報錯。
+它會檢查必要欄位、賽別距離對照、排除無效時間，把時間轉成秒數，建立每 5 分鐘直方圖與排序陣列，再輸出 `data/<id>_data.js`。缺少距離設定或 Excel 出現未登記賽別時會報錯。
 
 ### 4. 讓 `index.html` 載入新資料檔
 
 在 `index.html` 的既有資料載入區加入一行：
 
 ```html
-<script src="2026_example_data.js"></script>
+<script src="data/2026_example_data.js"></script>
 ```
 
 必須放在頁面主程式 `<script>` 之前。前端初始化會自動偵測 `window.marathonData` 的所有賽事，所以不需要另外改選單、圖表或 PR 查詢邏輯。
@@ -134,7 +134,7 @@ python extract_excel_result.py
 
 ## 現行資料與載入關係
 
-`index.html` 以各場 `<event_id>_data.js` 載入資料。`events_config.json` 中已設定但尚未產生 JS 的賽事，不會出現在前端選單；可用 `python extract_excel_result.py --event-id <event_id>` 產生指定資料檔。
+`index.html` 以各場 `data/<event_id>_data.js` 載入資料。`events_config.json` 中已設定但尚未產生 JS 的賽事，不會出現在前端選單；可用 `python extract_excel_result.py --event-id <event_id>` 產生指定資料檔。
 
 ## 維護提醒
 

@@ -6,7 +6,7 @@
 
 > 本工具以成績資料中的大會時間計算，並排除無有效完賽時間的紀錄；結果可能與淨時間或官方排名不同。
 
-<img width="857" height="778" alt="台灣馬拉松名次統計工具" src="https://github.com/user-attachments/assets/adc97c33-347c-4a12-9e70-63d362d4476e" />
+![目前的查詢介面](assets/site-overview.png)
 
 ---
 
@@ -38,10 +38,22 @@
 | 2026 | 國家地理路跑 | 5K、10K、半馬 |
 | 2026 | Panasonic 台北城市路跑 | 12.5K |
 
-賽別名稱、距離與來源網址以 [`events_config.json`](events_config.json) 為準。網站實際載入的成績為各場 `<event_id>_data.js`，由 [`index.html`](index.html) 引用。
+賽別名稱、距離與來源網址以 [`events_config.json`](events_config.json) 為準。網站實際載入的成績位於 `data/<event_id>_data.js`，由 [`index.html`](index.html) 引用。
+
+## 專案結構
+
+```text
+index.html                網站入口
+data/                     各賽事的前端成績 JS
+assets/                   README 介面截圖
+events_config.json        賽事與距離設定
+scrap_result.py           擷取原始成績
+extract_excel_result.py   Excel 轉成 data/ 中的 JS
+WORKFLOW.md               新增賽事與驗證步驟
+```
 
 ## 資料更新
 
-`scrap_result.py` 擷取成績並產生 Excel；`extract_excel_result.py` 依 `events_config.json` 把 Excel 轉成網站使用的 JS。新增賽事時，還需將新的 JS 以 `<script>` 加入 `index.html`。完整操作與驗證步驟見 [`WORKFLOW.md`](WORKFLOW.md)。
+`scrap_result.py` 擷取成績並產生 Excel；`extract_excel_result.py` 依 `events_config.json` 把 Excel 轉成 `data/` 中的 JS。新增賽事時，還需將新的 JS 以 `<script>` 加入 `index.html`。完整操作與驗證步驟見 [`WORKFLOW.md`](WORKFLOW.md)。
 
 這次新增的四份原始 Excel 含跑者姓名與背號，僅保留在本機、未推送到 GitHub；前端查詢使用 JS，不需下載 Excel。

@@ -326,7 +326,9 @@ def main():
             if not excel_path.exists() and len(Path(event["excel"]).parts) == 1:
                 excel_path = config_dir / "excels" / event["excel"]
             combined, metadata = build_data(excel_path, event)
-            js_filename = config_dir / f"{event['id']}_data.js"
+            data_dir = config_dir / "data"
+            data_dir.mkdir(exist_ok=True)
+            js_filename = data_dir / f"{event['id']}_data.js"
             output_event_js(combined, metadata, js_filename)
             print()
         except Exception as e:

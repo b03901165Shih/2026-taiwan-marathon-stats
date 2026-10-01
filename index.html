@@ -2,11 +2,9 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <head>
-  <title>2025-2026北部重要馬拉松賽事 - 名次統計工具</title>
-  <meta name="description" content="即時查詢馬拉松完賽分布、42K名次排名、個人成績分析。支援姓名、分組搜尋。">
-  <meta name="keywords" content="馬拉松完賽分布,完賽成績,42K名次,21K名次,馬拉松查詢">
-  </head>
+  <title>台灣路跑成績排名與 PR 查詢</title>
+  <meta name="description" content="查詢台灣路跑賽事完賽時間分布、排名與 PR，並比較不同賽事的同距離成績。">
+  <meta name="keywords" content="路跑,馬拉松,完賽時間,成績排名,PR,跨賽事比較">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI"; margin: 0; background: #f5f7fb; }
@@ -92,20 +90,20 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>🏃‍♂️ 2026 北部重要馬拉松賽事 - 名次統計工具</h1>
-  <div style="color:#6b7280;font-size:17px;">成績來源: Brav elog. 以大會成績(Official Time)為準.</div>
+  <h1>🏃‍♂️ 台灣路跑成績排名與 PR 查詢</h1>
+  <div style="color:#6b7280;font-size:17px;">成績來源：BraveLog；以大會時間（Official Time）為準。</div>
 
-  <!-- 新資料載入：支援無限賽事擴充！ -->
-  <script src="2025_tpe_data.js"></script>
-  <script src="2026_chartered_tpe_data.js"></script>
-  <script src="2026_freeway_tpe_data.js"></script>
-  <script src="2026_puma_night_run_data.js"></script>
-  <script src="2026_panasonic_tpe_data.js"></script>
-  <script src="2026_nat_geo_run_data.js"></script>
-  <script src="2025_uniform_invoice_run_data.js"></script>
-  <script src="2025_eva_air_marathon_data.js"></script>
-  <script src="2025_panasonic_tpe_data.js"></script>
-  <script src="2026_tainan_kutou_data.js"></script>
+  <!-- 各賽事的靜態成績資料 -->
+  <script src="data/2025_tpe_data.js"></script>
+  <script src="data/2026_chartered_tpe_data.js"></script>
+  <script src="data/2026_freeway_tpe_data.js"></script>
+  <script src="data/2026_puma_night_run_data.js"></script>
+  <script src="data/2026_panasonic_tpe_data.js"></script>
+  <script src="data/2026_nat_geo_run_data.js"></script>
+  <script src="data/2025_uniform_invoice_run_data.js"></script>
+  <script src="data/2025_eva_air_marathon_data.js"></script>
+  <script src="data/2025_panasonic_tpe_data.js"></script>
+  <script src="data/2026_tainan_kutou_data.js"></script>
   
 
   <!-- 區塊 1：互動式 histogram -->
