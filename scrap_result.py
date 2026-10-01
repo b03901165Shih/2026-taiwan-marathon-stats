@@ -29,10 +29,12 @@ if hasattr(sys.stderr, "reconfigure"):
 
 #BASE_URL = "https://www.bravelog.tw/contest/rank/2026090601" #PANASONIC
 
-BASE_URL = "https://www.bravelog.tw/contest/rank/2026042601" # 2026國家地理路跑
+#BASE_URL = "https://www.bravelog.tw/contest/rank/2026042601" # 2026國家地理路跑
+
+BASE_URL = "https://www.bravelog.tw/contest/rank/2026030101" # 2026 臺南古都國際半程馬拉松
 
 
-output_file = "2026國家地理路跑_完整成績.xlsx"
+output_file = "2026_臺南古都國際半程馬拉松_完整成績.xlsx"
 
 chrome_options = Options()
 chrome_options.add_argument("--headless=new")

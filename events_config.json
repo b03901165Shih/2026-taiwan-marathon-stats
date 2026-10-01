@@ -6,6 +6,7 @@
       "excel": "2025_台北馬拉松_完整成績.xlsx",
       "date": "2025-12-21",
       "race_types": ["MA", "HM"],
+      "race_distances_km": {"MA": 42.195, "HM": 21.0975},
       "total_count": 0,
       "source_url": "https://www.bravelog.tw/contest/rank/2025122101"
     },
@@ -15,6 +16,7 @@
       "excel": "2026_渣打台北馬拉松_完整成績.xlsx",
       "date": "2026-01-18",
       "race_types": ["全程馬拉松(42.195KM)", "半程馬拉松(21.0975km)", "11KM"],
+      "race_distances_km": {"全程馬拉松(42.195KM)": 42.195, "半程馬拉松(21.0975km)": 21.0975, "11KM": 11},
       "total_count": 0,
       "source_url": "https://www.bravelog.tw/contest/rank/2026011101"
     },
@@ -24,6 +26,7 @@
       "excel": "2026_南山人壽臺北國道馬拉松_完整成績.xlsx",
       "date": "2026-03-08",
       "race_types": ["MA", "HM"],
+      "race_distances_km": {"MA": 42.195, "HM": 21.0975},
       "total_count": 0,
       "source_url": "https://www.bravelog.tw/contest/rank/2026030801"
     },
@@ -33,6 +36,7 @@
       "excel": "2026_PUMA螢光夜跑_完整成績.xlsx",
       "date": "2026-03-08",
       "race_types": ["EliteRun菁英半馬組", "GlowRun螢光挑戰組"],
+      "race_distances_km": {"EliteRun菁英半馬組": 21.0975, "GlowRun螢光挑戰組": 10},
       "total_count": 0,
       "source_url": "https://www.bravelog.tw/contest/rank/2026032802"
     },
@@ -42,6 +46,7 @@
       "excel": "2026國家地理路跑_完整成績.xlsx",
       "date": "2026-04-26",
       "race_types": ["10K(慢跑組)", "21K(半馬組)", "10K(挑戰組)", "5K（休閒組）", "5K（親子組）"],
+      "race_distances_km": {"10K(慢跑組)": 10, "21K(半馬組)": 21.0975, "10K(挑戰組)": 10, "5K（休閒組）": 5, "5K（親子組）": 5},
       "total_count": 0,
       "source_url": "https://www.bravelog.tw/contest/rank/2026042601"
     }
@@ -50,11 +55,52 @@
     {
       "id": "2026_panasonic_tpe",
       "name": "2026 Panasonic台北城市路跑",
-      "excel": "2026_Panasonic台北城市路跑_完整成績.xlsx",
+      "excel": "excels/2026_Panasonic台北城市路跑_完整成績.xlsx",
       "date": "2026-09-06",
       "race_types": ["10"],
+      "race_distances_km": {"10": 12.5},
       "total_count": 0,
       "source_url": "https://www.bravelog.tw/contest/rank/2026090601"
+    },
+    {
+      "id": "2025_uniform_invoice_run",
+      "name": "2025 統一發票盃路跑活動",
+      "excel": "2025統一發票盃路跑活動_完整成績.xlsx",
+      "date": "2025-10-26",
+      "race_types": ["挑戰組(10km)", "半馬組(21km)"],
+      "race_distances_km": {"挑戰組(10km)": 10, "半馬組(21km)": 21.0975},
+      "total_count": 0,
+      "source_url": "https://www.bravelog.tw/contest/rank/2025102602"
+    },
+    {
+      "id": "2025_eva_air_marathon",
+      "name": "2025 長榮航空馬拉松",
+      "excel": "2025_長榮航空馬拉松_完整成績.xlsx",
+      "date": "2025-10-26",
+      "race_types": ["MA", "HM", "10KM"],
+      "race_distances_km": {"MA": 42.195, "HM": 21.0975, "10KM": 10},
+      "total_count": 0,
+      "source_url": "https://www.bravelog.tw/contest/rank/2025102603"
+    },
+    {
+      "id": "2025_panasonic_tpe",
+      "name": "2025 Panasonic TAIPEI CITY RUN台北城市路跑賽",
+      "excel": "2025_Panasonic台北城市路跑_完整成績.xlsx",
+      "date": "2025-09-14",
+      "race_types": ["10"],
+      "race_distances_km": {"10": 12.5},
+      "total_count": 0,
+      "source_url": "https://www.bravelog.tw/contest/rank/2025091402"
+    },
+    {
+      "id": "2026_tainan_kutou",
+      "name": "2026 臺南古都國際半程馬拉松",
+      "excel": "2026_臺南古都國際半程馬拉松_完整成績.xlsx",
+      "date": "2026-03-01",
+      "race_types": ["半程馬拉松21.0975km", "路跑組10km"],
+      "race_distances_km": {"半程馬拉松21.0975km": 21.0975, "路跑組10km": 10},
+      "total_count": 18314,
+      "source_url": "https://www.bravelog.tw/contest/rank/2026030101"
     }
   ]
 }

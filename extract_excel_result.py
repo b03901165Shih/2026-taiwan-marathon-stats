@@ -1,10 +1,18 @@
 import argparse
 import math
 import json
+import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 import pandas as pd
+
+
+# Windows 傳統主控台可能使用 CP950，無法輸出程式內的 emoji。
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 
 # ========= 基本工具函式 =========
@@ -175,6 +183,7 @@ def create_metadata(event_config: dict) -> dict:
         "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "total_participants": event_config.get("total_count", 0),
         "race_types": event_config["race_types"],
+        "race_distances_km": event_config["race_distances_km"],
         "group_categories": event_config.get("group_categories", ["ALL", "一般", "輪椅", "視障"]),
         "data_structure": {
             "histogram_bin_size": "5min",
@@ -193,6 +202,10 @@ def build_data(excel_path: str, event_config: dict) -> tuple[dict, dict, dict]:
     """建立完整資料集：combined + summary + metadata"""
     print("🔄 讀取並整理秒數中...")
     group_seconds = load_and_group_seconds(excel_path)
+    actual_race_types = {str(race_type) for race_type, _ in group_seconds}
+    missing_distances = actual_race_types - set(event_config["race_distances_km"])
+    if missing_distances:
+        raise ValueError(f"成績賽別缺少距離設定: {sorted(missing_distances)}")
     
     print("📊 計算 histogram...")
     hist_json = build_histograms(group_seconds)
@@ -235,8 +248,11 @@ def output_event_js(combined: dict, metadata: dict, js_filename: str):
         
         # 統計資訊註解
         total_keys = len(combined)
-        total_races = len(set(k.split('_')[1].split('__')[0] for k in combined))
-        total_people = sum(len(v.get('sorted_seconds', [])) for v in combined.values())
+        total_races = len({k.split("__", 2)[1] for k in combined})
+        total_people = sum(
+            len(v.get("sorted_seconds", []))
+            for k, v in combined.items() if k.endswith("__ALL")
+        )
         f.write(f"// 📊 統計：{total_races}賽別 × {total_keys}分組 = {total_people:,}完賽記錄\n")
     
     print(f"✅ 輸出：{js_filename}")
@@ -253,15 +269,28 @@ def load_event_configs(config_path: str | Path = DEFAULT_EVENT_CONFIG_PATH) -> l
     with path.open("r", encoding="utf-8") as f:
         payload = json.load(f)
 
-    events = payload.get("events", payload)
+    if isinstance(payload, dict):
+        events = payload.get("past_events", []) + payload.get("events", [])
+    else:
+        events = payload
     if not isinstance(events, list):
         raise ValueError("賽事設定格式錯誤：events 必須是 list")
 
-    required_keys = {"id", "name", "excel", "date", "race_types"}
+    required_keys = {"id", "name", "excel", "date", "race_types", "race_distances_km"}
+    seen_ids = set()
     for event in events:
         missing = required_keys - set(event.keys())
         if missing:
             raise ValueError(f"賽事設定缺少欄位 {missing}: {event}")
+        if event["id"] in seen_ids:
+            raise ValueError(f"重複的賽事 id: {event['id']}")
+        seen_ids.add(event["id"])
+        distances = event["race_distances_km"]
+        if not isinstance(distances, dict) or set(distances) != set(event["race_types"]):
+            raise ValueError(f"{event['id']} 的 race_distances_km 必須逐一對應 race_types")
+        if any(not isinstance(km, (int, float)) or isinstance(km, bool)
+               or not math.isfinite(km) or km <= 0 for km in distances.values()):
+            raise ValueError(f"{event['id']} 的賽別距離必須是正數公里數")
 
     return events
 
@@ -276,21 +305,36 @@ def main():
         default=str(DEFAULT_EVENT_CONFIG_PATH),
         help="賽事設定 JSON 路徑（預設: events_config.json）",
     )
+    parser.add_argument("--event-id", help="只產生指定賽事的資料檔")
     args = parser.parse_args()
 
+    config_dir = Path(args.config).resolve().parent
     EVENTS = load_event_configs(args.config)
+    if args.event_id:
+        EVENTS = [event for event in EVENTS if event["id"] == args.event_id]
+        if not EVENTS:
+            parser.error(f"找不到賽事 id: {args.event_id}")
 
     # 未來加新賽事：直接在 events_config.json 新增一筆即可。
 
+    failures = []
     for event in EVENTS:
         try:
-            excel_path = event["excel"]
+            excel_path = Path(event["excel"])
+            if not excel_path.is_absolute():
+                excel_path = config_dir / excel_path
+            if not excel_path.exists() and len(Path(event["excel"]).parts) == 1:
+                excel_path = config_dir / "excels" / event["excel"]
             combined, metadata = build_data(excel_path, event)
-            js_filename = f"{event['id']}_data.js"
+            js_filename = config_dir / f"{event['id']}_data.js"
             output_event_js(combined, metadata, js_filename)
             print()
         except Exception as e:
             print(f"❌ {event['name']} 處理失敗：{e}")
+            failures.append(event["id"])
+
+    if failures:
+        raise SystemExit(f"以下賽事產生失敗：{', '.join(failures)}")
 
 if __name__ == "__main__":
     main()
