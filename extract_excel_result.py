@@ -22,7 +22,9 @@ def time_str_to_seconds(t: str) -> int:
     將 'HH:MM:SS' 轉成秒數 (int)。
     若格式不合法，拋出 ValueError。
     """
-    h, m, s = map(int, str(t).split(":"))
+    if not re.fullmatch(r"\d{1,3}:[0-5]\d:[0-5]\d", str(t).strip()):
+        raise ValueError(f"無效的時間格式: {t}")
+    h, m, s = map(int, str(t).strip().split(":"))
     return h * 3600 + m * 60 + s
 
 
@@ -38,11 +40,17 @@ def seconds_to_time_str(sec: int) -> str:
 
 
 
+def group_label(value) -> str:
+    """Keep missing source categories explicit without inventing sex or age."""
+    import pandas as pd
+    return "未提供分組" if pd.isna(value) or not str(value).strip() else str(value)
+
+
 def build_group_keys(row) -> list[tuple[str, str]]:
     """給一列成績，回傳它應該被歸到哪些 (賽別, 分組key)"""
     keys: list[tuple[str, str]] = []
     race_type = row["賽別"]
-    group = str(row["分組"])
+    group = group_label(row["分組"])
     
     # 1) 賽別 + ALL
     keys.append((race_type, "ALL"))
@@ -66,6 +74,12 @@ def load_and_group_seconds(excel_path: str) -> dict[tuple[str, str], list[int]]:
     for col in required_cols:
         if col not in df.columns:
             raise ValueError(f"Excel 缺少必要欄位: {col}")
+
+    if "排名資格" in df.columns:
+        # Keep source eligibility separate from a parseable clock time.
+        if df["排名資格"].isna().any() or not df["排名資格"].isin([True, False, 0, 1]).all():
+            raise ValueError("排名資格必須明確為 True／False，不可缺漏或使用文字")
+        df = df[df["排名資格"] == True].copy()
 
     # 篩選有效資料 + 轉秒數
     def safe_time_to_seconds(t):
@@ -202,6 +216,14 @@ def create_metadata(event_config: dict) -> dict:
 def build_data(excel_path: str, event_config: dict) -> tuple[dict, dict, dict]:
     """建立完整資料集：combined + summary + metadata"""
     print("🔄 讀取並整理秒數中...")
+    from ranking_validation import is_bravelog, validate_workbook
+    ranking_proof = None
+    if is_bravelog(event_config):
+        _, ranking_proof = validate_workbook(excel_path, event_config)
+    if event_config.get("ranking_report_urls"):
+        import pandas as pd
+        if "排名資格" not in pd.read_excel(excel_path, nrows=0).columns:
+            raise ValueError("此賽事必須先執行 qualify_run2pix.py 核對排名資格")
     group_seconds = load_and_group_seconds(excel_path)
     actual_race_types = {str(race_type) for race_type, _ in group_seconds}
     missing_distances = actual_race_types - set(event_config["race_distances_km"])
@@ -226,6 +248,8 @@ def build_data(excel_path: str, event_config: dict) -> tuple[dict, dict, dict]:
             combined[full_key]["sorted_seconds"] = sorted_json[k]["sorted_seconds"]
     
     metadata = create_metadata(event_config)
+    if ranking_proof:
+        metadata["ranking_audit"] = {key: value for key, value in ranking_proof.items() if key != "digest"}
     return combined,  metadata
 
 def output_event_js(combined: dict, metadata: dict, js_filename: str):
@@ -295,6 +319,21 @@ def load_event_configs(config_path: str | Path = DEFAULT_EVENT_CONFIG_PATH) -> l
                 or len(set(filters.values())) != len(filters)
                 or set(filters.values()) != set(event["race_types"])):
                 raise ValueError(f"{event['id']} irunner_filters 必須逐一對應所有 race_types")
+        from ranking_validation import is_bravelog
+        if is_bravelog(event):
+            filters = event.get("bravelog_filters", {})
+            if (not filters or any(not str(k).isdigit() for k in filters)
+                    or len(set(filters.values())) != len(filters)
+                    or set(filters.values()) != set(event["race_types"])):
+                raise ValueError(f"{event['id']} BraveLog 必須設定所有賽別的實際 ID")
+            if event.get("ranking_validation") not in ("bravelog_individual", "run2pix"):
+                raise ValueError(f"{event['id']} BraveLog 必須指定排名資格查核方式")
+            if event["ranking_validation"] == "run2pix":
+                reports = event.get("ranking_report_urls", {})
+                if set(reports) != set(event["race_types"]):
+                    raise ValueError(f"{event['id']} 每個賽別必須有正式排名報表")
+                if not event.get("ranking_report_name"):
+                    raise ValueError(f"{event['id']} 必須填正式報表的原始賽事名稱")
         for race, groups in event.get("group_age_ranges", {}).items():
             if race not in event["race_types"]:
                 raise ValueError(f"{event['id']} 年齡設定的賽別不存在: {race}")
@@ -319,6 +358,8 @@ def load_event_configs(config_path: str | Path = DEFAULT_EVENT_CONFIG_PATH) -> l
 def output_catalog(events: list[dict], config_dir: Path):
     """Generate the browser list from settings; only include existing result files."""
     catalog = []
+    audit_path = config_dir / "data" / "source-audit.json"
+    audits = json.loads(audit_path.read_text(encoding="utf-8")) if audit_path.exists() else {}
     for event in events:
         filename = f"data/{event['id']}_data.js"
         if not (config_dir / filename).is_file():
@@ -326,9 +367,13 @@ def output_catalog(events: list[dict], config_dir: Path):
         metadata = {"event_id": event["id"], "event_name": event["name"],
                     "event_date": event["date"], "race_distances_km": event["race_distances_km"],
                     "source_url": event.get("source_url", ""),
+                    "notes": event.get("notes", ""),
                     "group_age_ranges": event.get("group_age_ranges", {}),
                     "group_age_source": event.get("group_age_source", "")}
-        catalog.append({"src": filename, "metadata": metadata})
+        from ranking_validation import is_bravelog
+        catalog.append({"src": filename, "requires_ranking_audit": is_bravelog(event),
+                        "ranking_audit": audits.get(event["id"]) if is_bravelog(event) else None,
+                        "metadata": metadata})
     data_dir = config_dir / "data"
     data_dir.mkdir(exist_ok=True)
     with (data_dir / "event-catalog.js").open("w", encoding="utf-8") as f:

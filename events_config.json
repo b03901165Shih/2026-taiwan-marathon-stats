@@ -14,13 +14,25 @@
         "HM": 21.0975
       },
       "total_count": 0,
-      "source_url": "https://www.bravelog.tw/contest/rank/2025122101"
+      "source_url": "https://www.run2pix.com/report/report_w.php?EventCode=20251221&Race=MA&sn=358",
+      "bravelog_filters": {
+        "1670": "MA",
+        "1671": "HM"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2025122101",
+      "ranking_validation": "run2pix",
+      "ranking_report_urls": {
+        "MA": "https://www.run2pix.com/report/report_w.php?EventCode=20251221&Race=MA&sn=358",
+        "HM": "https://www.run2pix.com/report/report_w.php?EventCode=20251221&Race=HM&sn=359"
+      },
+      "notes": "以 Run2Pix 正式排名報表的大會時間及總排名為準，未列總排名的紀錄不納入比較。",
+      "ranking_report_name": "2025 臺北馬拉松"
     },
     {
       "id": "2026_chartered_tpe",
       "name": "2026 渣打台北公益馬拉松",
       "excel": "2026_渣打台北馬拉松_完整成績.xlsx",
-      "date": "2026-01-18",
+      "date": "2026-01-11",
       "race_types": [
         "全程馬拉松(42.195KM)",
         "半程馬拉松(21.0975km)",
@@ -32,7 +44,21 @@
         "11KM": 11
       },
       "total_count": 0,
-      "source_url": "https://www.bravelog.tw/contest/rank/2026011101"
+      "source_url": "https://www.run2pix.com/report/report_w.php?EventCode=20260111&Race=MA&sn=360",
+      "bravelog_filters": {
+        "1686": "全程馬拉松(42.195KM)",
+        "1687": "半程馬拉松(21.0975km)",
+        "1688": "11KM"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2026011101",
+      "ranking_validation": "run2pix",
+      "ranking_report_urls": {
+        "全程馬拉松(42.195KM)": "https://www.run2pix.com/report/report_w.php?EventCode=20260111&Race=MA&sn=360",
+        "半程馬拉松(21.0975km)": "https://www.run2pix.com/report/report_w.php?EventCode=20260111&Race=HM&sn=361",
+        "11KM": "https://www.run2pix.com/report/report_w.php?EventCode=20260111&Race=10&sn=362"
+      },
+      "notes": "以 Run2Pix 正式排名報表的大會時間及總排名為準，未列總排名的紀錄不納入比較。",
+      "ranking_report_name": "2026 渣打臺北公益馬拉松"
     },
     {
       "id": "2026_freeway_tpe",
@@ -48,7 +74,19 @@
         "HM": 21.0975
       },
       "total_count": 0,
-      "source_url": "https://www.bravelog.tw/contest/rank/2026030801"
+      "source_url": "https://www.run2pix.com/report/report_w.php?EventCode=20260308&Race=MA&sn=368",
+      "bravelog_filters": {
+        "1722": "MA",
+        "1723": "HM"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2026030801",
+      "ranking_validation": "run2pix",
+      "ranking_report_urls": {
+        "MA": "https://www.run2pix.com/report/report_w.php?EventCode=20260308&Race=MA&sn=368",
+        "HM": "https://www.run2pix.com/report/report_w.php?EventCode=20260308&Race=HM&sn=369"
+      },
+      "notes": "以 Run2Pix 正式排名報表的大會時間及總排名為準，未列總排名的紀錄不納入比較。",
+      "ranking_report_name": "2026南山人壽臺北國道馬拉松"
     },
     {
       "id": "2026_puma_night_run",
@@ -64,7 +102,14 @@
         "GlowRun螢光挑戰組": 10
       },
       "total_count": 0,
-      "source_url": "https://www.bravelog.tw/contest/rank/2026032802"
+      "source_url": "https://www.bravelog.tw/contest/rank/2026032802",
+      "bravelog_filters": {
+        "1743": "EliteRun菁英半馬組",
+        "1744": "GlowRun螢光挑戰組"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2026032802",
+      "ranking_validation": "bravelog_individual",
+      "notes": "逐筆核對 BraveLog 公開總排名及大會時間，未列總排名者不納入比較；主辦最終公告優先。"
     },
     {
       "id": "2026_nat_geo_run",
@@ -74,16 +119,12 @@
       "race_types": [
         "10K(慢跑組)",
         "21K(半馬組)",
-        "10K(挑戰組)",
-        "5K（休閒組）",
-        "5K（親子組）"
+        "10K(挑戰組)"
       ],
       "race_distances_km": {
         "10K(慢跑組)": 10,
         "21K(半馬組)": 21.0975,
-        "10K(挑戰組)": 10,
-        "5K（休閒組）": 5,
-        "5K（親子組）": 5
+        "10K(挑戰組)": 10
       },
       "total_count": 0,
       "source_url": "https://www.bravelog.tw/contest/rank/2026042601",
@@ -127,7 +168,15 @@
             59
           ]
         }
-      }
+      },
+      "bravelog_filters": {
+        "1759": "10K(慢跑組)",
+        "1760": "21K(半馬組)",
+        "1761": "10K(挑戰組)"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2026042601",
+      "ranking_validation": "bravelog_individual",
+      "notes": "逐筆核對 BraveLog 公開總排名及大會時間，未列總排名者不納入比較；主辦最終公告優先。 兩個5K項目未提供公開排名，不納入排名比較。"
     }
   ],
   "events": [
@@ -143,7 +192,17 @@
         "10": 12.5
       },
       "total_count": 0,
-      "source_url": "https://www.bravelog.tw/contest/rank/2026090601"
+      "source_url": "https://www.run2pix.com/report/report_w.php?EventCode=20260906&Race=10&sn=380",
+      "bravelog_filters": {
+        "1818": "10"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2026090601",
+      "ranking_validation": "run2pix",
+      "ranking_report_urls": {
+        "10": "https://www.run2pix.com/report/report_w.php?EventCode=20260906&Race=10&sn=380"
+      },
+      "notes": "以 Run2Pix 正式排名報表的大會時間及總排名為準，未列總排名的紀錄不納入比較。",
+      "ranking_report_name": "2026 台北城市路跑賽"
     },
     {
       "id": "2025_uniform_invoice_run",
@@ -262,7 +321,14 @@
             59
           ]
         }
-      }
+      },
+      "bravelog_filters": {
+        "1589": "半馬組(21km)",
+        "1590": "挑戰組(10km)"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2025102602",
+      "ranking_validation": "bravelog_individual",
+      "notes": "逐筆核對 BraveLog 公開總排名及大會時間，未列總排名者不納入比較；主辦最終公告優先。"
     },
     {
       "id": "2025_eva_air_marathon",
@@ -280,7 +346,21 @@
         "10KM": 10
       },
       "total_count": 0,
-      "source_url": "https://www.bravelog.tw/contest/rank/2025102603"
+      "source_url": "https://www.run2pix.com/report/report_w.php?EventCode=20251026&Race=MA&sn=354",
+      "bravelog_filters": {
+        "1591": "MA",
+        "1592": "HM",
+        "1593": "10KM"
+      },
+      "ranking_report_urls": {
+        "MA": "https://www.run2pix.com/report/report_w.php?EventCode=20251026&Race=MA&sn=354",
+        "HM": "https://www.run2pix.com/report/report_w.php?EventCode=20251026&Race=HM&sn=355",
+        "10KM": "https://www.run2pix.com/report/report_w.php?EventCode=20251026&Race=10&sn=356"
+      },
+      "notes": "以 Run2Pix 正式排名報表的大會時間及總排名為準，未列總排名的紀錄不納入比較。",
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2025102603",
+      "ranking_validation": "run2pix",
+      "ranking_report_name": "2025長榮航空馬拉松"
     },
     {
       "id": "2025_panasonic_tpe",
@@ -294,7 +374,17 @@
         "10": 12.5
       },
       "total_count": 0,
-      "source_url": "https://www.bravelog.tw/contest/rank/2025091402"
+      "source_url": "https://www.run2pix.com/report/report_w.php?EventCode=20250914&Race=10&sn=350",
+      "bravelog_filters": {
+        "1550": "10"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2025091402",
+      "ranking_validation": "run2pix",
+      "ranking_report_urls": {
+        "10": "https://www.run2pix.com/report/report_w.php?EventCode=20250914&Race=10&sn=350"
+      },
+      "notes": "以 Run2Pix 正式排名報表的大會時間及總排名為準，未列總排名的紀錄不納入比較。",
+      "ranking_report_name": "2025 台北城市路跑賽"
     },
     {
       "id": "2026_tainan_kutou",
@@ -429,7 +519,14 @@
             39
           ]
         }
-      }
+      },
+      "bravelog_filters": {
+        "1717": "路跑組10km",
+        "1718": "半程馬拉松21.0975km"
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2026030101",
+      "ranking_validation": "bravelog_individual",
+      "notes": "逐筆核對 BraveLog 公開總排名及大會時間，未列總排名者不納入比較；主辦最終公告優先。"
     },
     {
       "id": "2025_pocari_run",
@@ -510,6 +607,1023 @@
         }
       },
       "notes": "官方公布距離21K／10K；21K歲數依活動簡章第10頁出生年換算。團隊賽別保留個人成績，不使用隊伍前三人成績加總。"
+    },
+    {
+      "id": "2025_tianzhong_marathon",
+      "name": "2025 台灣米倉田中馬拉松",
+      "date": "2025-11-09",
+      "excel": "2025_台灣米倉田中馬拉松_完整成績.xlsx",
+      "race_types": [
+        "全程馬拉松",
+        "半程馬拉松 22.6K",
+        "健跑組 9.7K"
+      ],
+      "race_distances_km": {
+        "全程馬拉松": 42.25,
+        "半程馬拉松 22.6K": 22.6,
+        "健跑組 9.7K": 9.7
+      },
+      "total_count": 0,
+      "source_url": "https://irunner.biji.co/track/1465/results",
+      "irunner_filters": {
+        "42K": "全程馬拉松",
+        "22K6": "半程馬拉松 22.6K",
+        "9K7": "健跑組 9.7K"
+      },
+      "notes": "依官方路線段落登錄全馬42.25K、半馬22.6K、健跑9.7K；不與42.195K或21.0975K混比。不敘獎組未提供性別及年齡。",
+      "group_age_source": "https://irunner.biji.co/Tianzhong2025?page=3932",
+      "group_age_ranges": {
+        "全程馬拉松": {
+          "男A組": [
+            60,
+            null
+          ],
+          "男B組": [
+            50,
+            59
+          ],
+          "男C組": [
+            40,
+            49
+          ],
+          "男D組": [
+            30,
+            39
+          ],
+          "男E組": [
+            0,
+            29
+          ],
+          "女A組": [
+            50,
+            null
+          ],
+          "女B組": [
+            40,
+            49
+          ],
+          "女C組": [
+            30,
+            39
+          ],
+          "女D組": [
+            0,
+            29
+          ]
+        },
+        "半程馬拉松 22.6K": {
+          "男A組": [
+            60,
+            null
+          ],
+          "男B組": [
+            50,
+            59
+          ],
+          "男C組": [
+            40,
+            49
+          ],
+          "男D組": [
+            30,
+            39
+          ],
+          "男E組": [
+            0,
+            29
+          ],
+          "女A組": [
+            50,
+            null
+          ],
+          "女B組": [
+            40,
+            49
+          ],
+          "女C組": [
+            30,
+            39
+          ],
+          "女D組": [
+            0,
+            29
+          ]
+        }
+      }
+    },
+    {
+      "id": "2025_sunmoonlake_marathon",
+      "name": "2025 日月潭環湖馬拉松",
+      "date": "2025-10-26",
+      "excel": "2025_日月潭環湖馬拉松_完整成績.xlsx",
+      "race_types": [
+        "全馬組(42K)",
+        "超半馬組(29K)"
+      ],
+      "race_distances_km": {
+        "全馬組(42K)": 42.195,
+        "超半馬組(29K)": 29
+      },
+      "total_count": 0,
+      "source_url": "https://irunner.biji.co/track/1468/results",
+      "irunner_filters": {
+        "42K": "全馬組(42K)",
+        "29K": "超半馬組(29K)"
+      },
+      "group_age_source": "https://irunner.biji.co/sunmoonlakemarathon2025",
+      "group_age_ranges": {
+        "全馬組(42K)": {
+          "男甲組": [
+            60,
+            null
+          ],
+          "男乙組": [
+            50,
+            59
+          ],
+          "男丙組": [
+            40,
+            49
+          ],
+          "男丁組": [
+            30,
+            39
+          ],
+          "男戊組": [
+            0,
+            29
+          ],
+          "女甲組": [
+            60,
+            null
+          ],
+          "女乙組": [
+            50,
+            59
+          ],
+          "女丙組": [
+            40,
+            49
+          ],
+          "女丁組": [
+            30,
+            39
+          ],
+          "女戊組": [
+            0,
+            29
+          ]
+        },
+        "超半馬組(29K)": {
+          "男甲組": [
+            60,
+            null
+          ],
+          "男乙組": [
+            50,
+            59
+          ],
+          "男丙組": [
+            40,
+            49
+          ],
+          "男丁組": [
+            30,
+            39
+          ],
+          "男戊組": [
+            0,
+            29
+          ],
+          "女甲組": [
+            60,
+            null
+          ],
+          "女乙組": [
+            50,
+            59
+          ],
+          "女丙組": [
+            40,
+            49
+          ],
+          "女丁組": [
+            30,
+            39
+          ],
+          "女戊組": [
+            0,
+            29
+          ]
+        }
+      }
+    },
+    {
+      "id": "2026_livetrue_taichung_marathon",
+      "name": "2026 麗晨臺中國際馬拉松",
+      "date": "2026-01-11",
+      "excel": "2026_麗晨臺中國際馬拉松_完整成績.xlsx",
+      "race_types": [
+        "全程馬拉松組",
+        "半程馬拉松組",
+        "10公里組",
+        "3公里組"
+      ],
+      "race_distances_km": {
+        "全程馬拉松組": 42.195,
+        "半程馬拉松組": 21,
+        "10公里組": 10,
+        "3公里組": 3
+      },
+      "total_count": 0,
+      "source_url": "https://irunner.biji.co/track/1495/results",
+      "irunner_filters": {
+        "42K": "全程馬拉松組",
+        "21K": "半程馬拉松組",
+        "10K": "10公里組",
+        "3K": "3公里組"
+      },
+      "group_age_source": "https://irunner.biji.co/2026livetruemarathon?page=4331",
+      "group_age_ranges": {
+        "10公里組": {
+          "男樂齡組": [
+            70,
+            null
+          ],
+          "男甲組": [
+            60,
+            69
+          ],
+          "男乙組": [
+            50,
+            59
+          ],
+          "男丙組": [
+            40,
+            49
+          ],
+          "男丁組": [
+            30,
+            39
+          ],
+          "男戊組": [
+            20,
+            29
+          ],
+          "男己組": [
+            0,
+            19
+          ],
+          "女樂齡組": [
+            70,
+            null
+          ],
+          "女甲組": [
+            60,
+            69
+          ],
+          "女乙組": [
+            50,
+            59
+          ],
+          "女丙組": [
+            40,
+            49
+          ],
+          "女丁組": [
+            30,
+            39
+          ],
+          "女戊組": [
+            20,
+            29
+          ],
+          "女己組": [
+            0,
+            19
+          ]
+        },
+        "3公里組": {
+          "男樂齡組": [
+            70,
+            null
+          ],
+          "男甲組": [
+            60,
+            69
+          ],
+          "男乙組": [
+            50,
+            59
+          ],
+          "男丙組": [
+            40,
+            49
+          ],
+          "男丁組": [
+            30,
+            39
+          ],
+          "男戊組": [
+            20,
+            29
+          ],
+          "男己組": [
+            0,
+            19
+          ],
+          "女樂齡組": [
+            70,
+            null
+          ],
+          "女甲組": [
+            60,
+            69
+          ],
+          "女乙組": [
+            50,
+            59
+          ],
+          "女丙組": [
+            40,
+            49
+          ],
+          "女丁組": [
+            30,
+            39
+          ],
+          "女戊組": [
+            20,
+            29
+          ],
+          "女己組": [
+            0,
+            19
+          ]
+        },
+        "全程馬拉松組": {
+          "男樂齡組": [
+            70,
+            null
+          ],
+          "男甲組": [
+            60,
+            69
+          ],
+          "男乙組": [
+            50,
+            59
+          ],
+          "男丙組": [
+            40,
+            49
+          ],
+          "男丁組": [
+            30,
+            39
+          ],
+          "男戊組": [
+            20,
+            29
+          ],
+          "男己組": [
+            0,
+            19
+          ],
+          "女樂齡組": [
+            70,
+            null
+          ],
+          "女甲組": [
+            60,
+            69
+          ],
+          "女乙組": [
+            50,
+            59
+          ],
+          "女丙組": [
+            40,
+            49
+          ],
+          "女丁組": [
+            30,
+            39
+          ],
+          "女戊組": [
+            20,
+            29
+          ]
+        },
+        "半程馬拉松組": {
+          "男樂齡組": [
+            70,
+            null
+          ],
+          "男甲組": [
+            60,
+            69
+          ],
+          "男乙組": [
+            50,
+            59
+          ],
+          "男丙組": [
+            40,
+            49
+          ],
+          "男丁組": [
+            30,
+            39
+          ],
+          "男戊組": [
+            20,
+            29
+          ],
+          "男己組": [
+            0,
+            19
+          ],
+          "女樂齡組": [
+            70,
+            null
+          ],
+          "女甲組": [
+            60,
+            69
+          ],
+          "女乙組": [
+            50,
+            59
+          ],
+          "女丙組": [
+            40,
+            49
+          ],
+          "女丁組": [
+            30,
+            39
+          ],
+          "女戊組": [
+            20,
+            29
+          ],
+          "女己組": [
+            0,
+            19
+          ]
+        }
+      }
+    },
+    {
+      "id": "2026_taichung_city_half",
+      "name": "2026 臺中城市半程馬拉松",
+      "date": "2026-03-15",
+      "excel": "2026_臺中城市半程馬拉松_完整成績.xlsx",
+      "race_types": [
+        "半馬組(21km)",
+        "挑戰組(10km)"
+      ],
+      "race_distances_km": {
+        "半馬組(21km)": 21,
+        "挑戰組(10km)": 10
+      },
+      "total_count": 0,
+      "source_url": "https://irunner.biji.co/track/1511/results",
+      "irunner_filters": {
+        "21K": "半馬組(21km)",
+        "10K": "挑戰組(10km)"
+      },
+      "group_age_source": "https://irunner.biji.co/2026RUNFOROURPLANET?page=4423",
+      "group_age_ranges": {
+        "半馬組(21km)": {
+          "男A組": [
+            60,
+            null
+          ],
+          "男B組": [
+            50,
+            59
+          ],
+          "男C組": [
+            40,
+            49
+          ],
+          "男D組": [
+            30,
+            39
+          ],
+          "男E組": [
+            16,
+            29
+          ],
+          "女A組": [
+            50,
+            null
+          ],
+          "女B組": [
+            40,
+            49
+          ],
+          "女C組": [
+            30,
+            39
+          ],
+          "女D組": [
+            16,
+            29
+          ]
+        }
+      }
+    },
+    {
+      "id": "2025_zhubei_run",
+      "name": "2025 竹北半城路跑",
+      "date": "2025-12-06",
+      "excel": "2025_竹北半城路跑_完整成績.xlsx",
+      "race_types": [
+        "菁英挑戰組",
+        "城市挑戰組"
+      ],
+      "race_distances_km": {
+        "菁英挑戰組": 21,
+        "城市挑戰組": 12
+      },
+      "total_count": 0,
+      "source_url": "https://irunner.biji.co/track/1488/results",
+      "irunner_filters": {
+        "21K": "菁英挑戰組",
+        "12K": "城市挑戰組"
+      },
+      "group_age_source": "https://lohasnet.tw/ZhubeiRun2025/",
+      "group_age_ranges": {
+        "城市挑戰組": {
+          "男A組": [
+            50,
+            null
+          ],
+          "男B組": [
+            40,
+            49
+          ],
+          "男C組": [
+            30,
+            39
+          ],
+          "男D組": [
+            12,
+            29
+          ],
+          "女A組": [
+            50,
+            null
+          ],
+          "女B組": [
+            40,
+            49
+          ],
+          "女C組": [
+            30,
+            39
+          ],
+          "女D組": [
+            12,
+            29
+          ]
+        },
+        "菁英挑戰組": {
+          "男A組": [
+            50,
+            null
+          ],
+          "男B組": [
+            40,
+            49
+          ],
+          "男C組": [
+            30,
+            39
+          ],
+          "男D組": [
+            12,
+            29
+          ],
+          "女A組": [
+            50,
+            null
+          ],
+          "女B組": [
+            40,
+            49
+          ],
+          "女C組": [
+            30,
+            39
+          ],
+          "女D組": [
+            12,
+            29
+          ]
+        }
+      }
+    },
+    {
+      "id": "2026_kaohsiung_fubon",
+      "name": "2026 高雄富邦馬拉松",
+      "date": "2026-01-11",
+      "excel": "2026_高雄富邦馬拉松_完整成績.xlsx",
+      "race_types": [
+        "半程馬拉松(21.0975km)",
+        "馬拉松"
+      ],
+      "race_distances_km": {
+        "半程馬拉松(21.0975km)": 21.0975,
+        "馬拉松": 42.195
+      },
+      "total_count": 0,
+      "source_url": "https://www.bravelog.tw/contest/rank/2026011001",
+      "bravelog_filters": {
+        "1681": "半程馬拉松(21.0975km)",
+        "1684": "馬拉松"
+      },
+      "notes": "逐筆核對 BraveLog 公開總排名及大會時間，未列總排名者不納入比較；主辦最終公告優先。 收錄1月11日一般全馬及半馬；半馬依賽後成績頁21.0975K登錄。休閒、視障及輪椅項目未包含在本次資料中。",
+      "group_age_source": "https://running.biji.co/index.php?act=info&cid=12626&q=competition",
+      "group_age_ranges": {
+        "半程馬拉松(21.0975km)": {
+          "男A組": [
+            70,
+            null
+          ],
+          "男B組": [
+            60,
+            69
+          ],
+          "男C組": [
+            50,
+            59
+          ],
+          "男D組": [
+            40,
+            49
+          ],
+          "男E組": [
+            30,
+            39
+          ],
+          "男F組": [
+            20,
+            29
+          ],
+          "男G組": [
+            18,
+            19
+          ],
+          "女A組": [
+            60,
+            null
+          ],
+          "女B組": [
+            50,
+            59
+          ],
+          "女C組": [
+            40,
+            49
+          ],
+          "女D組": [
+            30,
+            39
+          ],
+          "女E組": [
+            20,
+            29
+          ],
+          "女F組": [
+            18,
+            19
+          ]
+        },
+        "馬拉松": {
+          "男A組": [
+            70,
+            null
+          ],
+          "男B組": [
+            60,
+            69
+          ],
+          "男C組": [
+            50,
+            59
+          ],
+          "男D組": [
+            40,
+            49
+          ],
+          "男E組": [
+            30,
+            39
+          ],
+          "男F組": [
+            20,
+            29
+          ],
+          "男G組": [
+            18,
+            19
+          ],
+          "女A組": [
+            60,
+            null
+          ],
+          "女B組": [
+            50,
+            59
+          ],
+          "女C組": [
+            40,
+            49
+          ],
+          "女D組": [
+            30,
+            39
+          ],
+          "女E組": [
+            20,
+            29
+          ],
+          "女F組": [
+            18,
+            19
+          ]
+        }
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2026011001",
+      "ranking_validation": "bravelog_individual"
+    },
+    {
+      "id": "2025_taoyuan_maple_half",
+      "name": "2025 桃園半程馬拉松 石門水庫楓半馬",
+      "date": "2025-12-07",
+      "excel": "2025_桃園半程馬拉松_石門水庫楓半馬_完整成績.xlsx",
+      "race_types": [
+        "半程馬拉松",
+        "路跑組"
+      ],
+      "race_distances_km": {
+        "半程馬拉松": 21.0975,
+        "路跑組": 10
+      },
+      "total_count": 0,
+      "source_url": "https://www.bravelog.tw/contest/rank/2025120702",
+      "bravelog_filters": {
+        "1657": "半程馬拉松",
+        "1658": "路跑組"
+      },
+      "notes": "逐筆核對 BraveLog 公開總排名及大會時間，未列總排名者不納入比較；主辦最終公告優先。 官方個人成績只按性別分組，沒有年齡分組；半馬21.0975K、路跑10K，5K沒有此次公開計時資料。",
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2025120702",
+      "ranking_validation": "bravelog_individual"
+    },
+    {
+      "id": "2025_chiayi_twinlake_elite",
+      "name": "2025 嘉義雙潭馬拉松菁英賽",
+      "date": "2025-11-30",
+      "excel": "2025_嘉義雙潭馬拉松菁英賽_完整成績.xlsx",
+      "race_types": [
+        "全馬組",
+        "半馬組"
+      ],
+      "race_distances_km": {
+        "全馬組": 42.195,
+        "半馬組": 21.0975
+      },
+      "total_count": 0,
+      "source_url": "https://www.bravelog.tw/contest/rank/2025113001",
+      "bravelog_filters": {
+        "1648": "全馬組",
+        "1649": "半馬組"
+      },
+      "group_age_source": "https://www.ctrun.com.tw/Activity/?EventMain_ID=263&Article_ID=5585",
+      "group_age_ranges": {
+        "全馬組": {
+          "男A組": [
+            0,
+            19
+          ],
+          "男B組": [
+            20,
+            29
+          ],
+          "男C組": [
+            30,
+            39
+          ],
+          "男D組": [
+            40,
+            49
+          ],
+          "男E組": [
+            50,
+            59
+          ],
+          "男F組": [
+            60,
+            69
+          ],
+          "男G組": [
+            70,
+            null
+          ],
+          "女B組": [
+            20,
+            29
+          ],
+          "女C組": [
+            30,
+            39
+          ],
+          "女D組": [
+            40,
+            49
+          ],
+          "女E組": [
+            50,
+            59
+          ]
+        },
+        "半馬組": {
+          "男A組": [
+            0,
+            19
+          ],
+          "男B組": [
+            20,
+            29
+          ],
+          "男C組": [
+            30,
+            39
+          ],
+          "男D組": [
+            40,
+            49
+          ],
+          "男E組": [
+            50,
+            59
+          ],
+          "男F組": [
+            60,
+            69
+          ],
+          "男G組": [
+            70,
+            null
+          ],
+          "女A組": [
+            0,
+            19
+          ],
+          "女B組": [
+            20,
+            29
+          ],
+          "女C組": [
+            30,
+            39
+          ],
+          "女D組": [
+            40,
+            49
+          ],
+          "女E組": [
+            50,
+            59
+          ],
+          "女F組": [
+            60,
+            null
+          ]
+        }
+      },
+      "bravelog_source_url": "https://www.bravelog.tw/contest/rank/2025113001",
+      "ranking_validation": "bravelog_individual",
+      "notes": "逐筆核對 BraveLog 公開總排名及大會時間，未列總排名者不納入比較；主辦最終公告優先。"
+    },
+    {
+      "id": "2026_zepro_taichung",
+      "name": "2026 ZEPRO RUN 全國半程馬拉松 台中場",
+      "date": "2026-04-26",
+      "excel": "2026_ZEPRO_台中_完整成績.xlsx",
+      "race_types": [
+        "21公里組",
+        "10公里組",
+        "3.5公里組"
+      ],
+      "race_distances_km": {
+        "21公里組": 21,
+        "10公里組": 10,
+        "3.5公里組": 3.5
+      },
+      "total_count": 0,
+      "source_url": "https://accounter.ctrun.com.tw/RSIS/Result/PH260426",
+      "notes": "21K設有年齡組；10K、3.5K只提供性別。3.5K有公開成績，但官方不提供排名獎勵，本站名次僅為時間試算。",
+      "group_age_source": "https://www.ctrun.com.tw/Activity/?EventMain_ID=282&Article_ID=5923",
+      "group_age_ranges": {
+        "21公里組": {
+          "男甲組": [
+            60,
+            null
+          ],
+          "男乙組": [
+            50,
+            59
+          ],
+          "男丙組": [
+            40,
+            49
+          ],
+          "男丁組": [
+            30,
+            39
+          ],
+          "男戊組": [
+            20,
+            29
+          ],
+          "男己組": [
+            0,
+            19
+          ],
+          "女甲組": [
+            60,
+            null
+          ],
+          "女乙組": [
+            50,
+            59
+          ],
+          "女丙組": [
+            40,
+            49
+          ],
+          "女丁組": [
+            30,
+            39
+          ],
+          "女戊組": [
+            20,
+            29
+          ],
+          "女己組": [
+            0,
+            19
+          ]
+        }
+      }
+    },
+    {
+      "id": "2026_wanjinshi_marathon",
+      "name": "2026 新北市萬金石馬拉松",
+      "date": "2026-03-15",
+      "excel": "2026_萬金石_完整成績.xlsx",
+      "race_types": [
+        "馬拉松",
+        "挑戰馬"
+      ],
+      "race_distances_km": {
+        "馬拉松": 42.195,
+        "挑戰馬": 10
+      },
+      "total_count": 0,
+      "source_url": "https://wanjinshi-marathon.com.tw/2026/03/2026%E6%96%B0%E5%8C%97%E5%B8%82%E8%90%AC%E9%87%91%E7%9F%B3%E9%A6%AC%E6%8B%89%E6%9D%BE%E6%88%90%E7%B8%BE%E5%85%AC%E5%91%8A/",
+      "pdf_ranking_sources": [
+        {
+          "url": "https://wanjinshi-marathon.com.tw/wp-content/uploads/2026/03/2026新北市萬金石馬拉松-馬拉松男子組成績公告.pdf",
+          "race": "馬拉松",
+          "group": "男子組",
+          "expected_count": 4580
+        },
+        {
+          "url": "https://wanjinshi-marathon.com.tw/wp-content/uploads/2026/03/2026新北市萬金石馬拉松-馬拉松女子組成績公告-1.pdf",
+          "race": "馬拉松",
+          "group": "女子組",
+          "expected_count": 1011
+        },
+        {
+          "url": "https://wanjinshi-marathon.com.tw/wp-content/uploads/2026/03/2026新北市萬金石馬拉松-挑戰馬男子組成績公告-1.pdf",
+          "race": "挑戰馬",
+          "group": "男子組",
+          "expected_count": 2576
+        },
+        {
+          "url": "https://wanjinshi-marathon.com.tw/wp-content/uploads/2026/03/2026新北市萬金石馬拉松-挑戰馬女子組成績公告-1.pdf",
+          "race": "挑戰馬",
+          "group": "女子組",
+          "expected_count": 2478
+        }
+      ],
+      "notes": "官方成績公告只提供性別與大會時間，未提供逐人分齡；不推估年齡，不納入跨場年齡比較。"
     }
   ]
 }

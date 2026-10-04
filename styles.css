@@ -88,8 +88,13 @@ h3{
 }
 .hero-meta{
   font-size:15px;
-  white-space:nowrap
+  max-width:400px;
+  white-space:normal
 }
+.load-issues{margin-bottom:20px}
+.load-issues summary{font-size:18px;font-weight:700;cursor:pointer}
+.load-issues p,.load-issues li{font-size:16px;line-height:1.65}
+.load-notice{padding:16px;border-left:4px solid var(--brand);font-size:17px;line-height:1.65}
 .hero-meta small{
   display:block;
   color:var(--muted);
@@ -133,6 +138,15 @@ h3{
   display:grid;
   grid-template-columns:1.8fr 1.2fr .8fr 1.5fr;
   gap:16px
+}
+.event-filters{
+  display:grid;
+  grid-template-columns:160px minmax(0,1fr);
+  gap:16px;
+  margin-bottom:16px
+}
+.benchmark-filters{
+  grid-template-columns:1.2fr .8fr 1.5fr
 }
 label{
   display:flex;
@@ -498,6 +512,10 @@ footer p{
 }
 .filters{
   grid-template-columns:1fr 1fr;
+  gap:14px
+}
+.event-filters{
+  grid-template-columns:1fr;
   gap:14px
 }
 .event-field,.population-field{

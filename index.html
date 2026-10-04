@@ -14,15 +14,25 @@
       <div><div class="eyebrow">TAIWAN RUNNING STATS</div><h1>找到你的跑步座標<span class="accent">。</span></h1><p>看看你的時間落在哪裡，再探索下一個目標。</p></div>
       <div class="hero-meta"><span class="dot"></span> <span id="coverage">成績資料載入中</span><small>官方成績 · 大會時間</small></div>
     </header>
+    <details id="loadIssues" class="card load-issues" hidden>
+      <summary>暫停使用的賽事</summary>
+      <p>以下賽事尚未完成來源查核或資料載入，暫不參與查詢與比較。查核完成後，重新整理即可使用。</p>
+      <ul id="loadIssueList"></ul>
+    </details>
+    <p id="requestedEventNotice" class="load-notice" role="status" hidden></p>
     <section class="card setup" aria-labelledby="setupTitle">
       <div class="section-heading"><div><span class="eyebrow">YOUR BENCHMARK</span><h2 id="setupTitle">先設定比較基準</h2></div><button class="secondary" id="share" type="button">複製查詢連結</button></div>
-      <div class="filters">
+      <div class="event-filters">
+        <label>賽事年份<select id="year"></select></label>
         <label class="event-field">參考賽事<select id="event"></select></label>
+      </div>
+      <div class="filters benchmark-filters">
         <label>賽別<select id="race"></select></label>
         <label>參賽類型<select id="category"></select></label>
         <label class="population-field">比較族群<select id="population"><option value="ALL">全體</option><option value="男">男性</option><option value="女">女性</option></select></label>
       </div>
       <div class="context" id="context"></div>
+      <p class="muted caption" id="eventNotes" hidden></p>
       <form id="timeForm" class="query-form shared-time" novalidate>
         <fieldset><legend>你的完賽時間 · 每個頁籤都沿用</legend><div class="time-input"><label><input id="hours" type="number" inputmode="numeric" min="0" max="23" step="1" value="1" aria-label="小時"><span>時</span></label><b>:</b><label><input id="minutes" type="number" inputmode="numeric" min="0" max="59" step="1" value="30" aria-label="分鐘"><span>分</span></label><b>:</b><label><input id="seconds" type="number" inputmode="numeric" min="0" max="59" step="1" value="0" aria-label="秒"><span>秒</span></label></div></fieldset>
         <button type="submit">更新試算 ↗</button><span id="pace" class="muted"></span>

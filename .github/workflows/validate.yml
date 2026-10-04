@@ -1,0 +1,38 @@
+name: Validate statistics and ranking sources
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Install importer test dependencies
+        run: python -m pip install pandas openpyxl pypdf
+      - name: Validate published data and independent source checkpoints
+        run: |
+          node tests/stats.test.js
+          node tests/age.test.js
+          node tests/data.test.js
+          node tests/catalog.test.js
+          node tests/source.test.js
+          node tests/audit.test.js
+          node tests/loader.test.js
+          node --check js/app.js
+          node --check js/data-loader.js
+      - name: Test ranking qualification and incomplete import rejection
+        run: python -m unittest discover -s tests -p 'test_*.py'

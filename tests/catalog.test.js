@@ -11,6 +11,8 @@ for(const e of events){
   assert.equal(entry.src,`data/${e.id}_data.js`);
   assert.equal(entry.metadata.event_date,e.date);
   assert.equal(entry.metadata.event_name,e.name);
+  assert.equal(entry.metadata.notes,e.notes||'');
+  assert.equal(entry.requires_ranking_audit,Boolean(e.ranking_validation),e.id+' audit requirement follows settings');
   assert.deepEqual(JSON.parse(JSON.stringify(entry.metadata.race_distances_km)),e.race_distances_km);
   vm.runInContext(fs.readFileSync(entry.src,'utf8'),ctx);
   for(const key of Object.keys(ctx.window.marathonData[e.id].binsAndPr)){

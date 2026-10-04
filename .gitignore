@@ -2,3 +2,4 @@
 *.xlsx
 *.log
 __pycache__/
+excels/.source-cache/

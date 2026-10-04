@@ -1,0 +1,706 @@
+{
+  "2025_tpe": {
+    "version": 1,
+    "event_id": "2025_tpe",
+    "checked_at": "2026-10-03T15:48:43.735509+00:00",
+    "method": "run2pix",
+    "sources": {
+      "MA": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20251221&Race=MA&sn=358",
+        "ranked_count": 8278,
+        "first_ten_seconds": [
+          7771,
+          7791,
+          7830,
+          7864,
+          7874,
+          7908,
+          8023,
+          8057,
+          8070,
+          8220
+        ]
+      },
+      "HM": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20251221&Race=HM&sn=359",
+        "ranked_count": 16954,
+        "first_ten_seconds": [
+          3923,
+          3933,
+          3943,
+          4105,
+          4118,
+          4124,
+          4140,
+          4212,
+          4232,
+          4244
+        ]
+      }
+    },
+    "public_data_digest": "3ceb647a185cafdf99f332bf47769d7ce6c4c4d2c5dd7378c91a296ad2c047ae"
+  },
+  "2026_chartered_tpe": {
+    "version": 1,
+    "event_id": "2026_chartered_tpe",
+    "checked_at": "2026-10-03T15:51:48.497102+00:00",
+    "method": "run2pix",
+    "sources": {
+      "全程馬拉松(42.195KM)": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20260111&Race=MA&sn=360",
+        "ranked_count": 3722,
+        "first_ten_seconds": [
+          9011,
+          9059,
+          9163,
+          9500,
+          9522,
+          9546,
+          9574,
+          9582,
+          9612,
+          9615
+        ]
+      },
+      "半程馬拉松(21.0975km)": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20260111&Race=HM&sn=361",
+        "ranked_count": 8090,
+        "first_ten_seconds": [
+          4136,
+          4174,
+          4347,
+          4380,
+          4418,
+          4427,
+          4443,
+          4505,
+          4550,
+          4629
+        ]
+      },
+      "11KM": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20260111&Race=10&sn=362",
+        "ranked_count": 7184,
+        "first_ten_seconds": [
+          2123,
+          2140,
+          2166,
+          2173,
+          2213,
+          2365,
+          2423,
+          2430,
+          2533,
+          2534
+        ]
+      }
+    },
+    "public_data_digest": "43586d469b857e1a2c276f63ca13eeb2d833daad3371ea8b12c3ac0021779113"
+  },
+  "2026_freeway_tpe": {
+    "version": 1,
+    "event_id": "2026_freeway_tpe",
+    "checked_at": "2026-10-03T15:52:38.985663+00:00",
+    "method": "run2pix",
+    "sources": {
+      "MA": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20260308&Race=MA&sn=368",
+        "ranked_count": 331,
+        "first_ten_seconds": [
+          9408,
+          9443,
+          9898,
+          9927,
+          10038,
+          10058,
+          10194,
+          10218,
+          10242,
+          10319
+        ]
+      },
+      "HM": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20260308&Race=HM&sn=369",
+        "ranked_count": 4820,
+        "first_ten_seconds": [
+          4425,
+          4438,
+          4446,
+          4465,
+          4554,
+          4578,
+          4651,
+          4654,
+          4662,
+          4662
+        ]
+      }
+    },
+    "public_data_digest": "631bc25fda734cfbccdda44d6783b49a6aeed43c9c9335e1322e80947ab1b3de"
+  },
+  "2026_panasonic_tpe": {
+    "version": 1,
+    "event_id": "2026_panasonic_tpe",
+    "checked_at": "2026-10-03T16:42:40.526467+00:00",
+    "method": "run2pix",
+    "sources": {
+      "10": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20260906&Race=10&sn=380",
+        "ranked_count": 4483,
+        "first_ten_seconds": [
+          2358,
+          2368,
+          2370,
+          2374,
+          2392,
+          2406,
+          2443,
+          2571,
+          2573,
+          2595
+        ]
+      }
+    },
+    "public_data_digest": "996e68adaa872b48b82c14f0ec3e0b480f0f81d3b6eca1f608b6d78e03f5109d"
+  },
+  "2025_eva_air_marathon": {
+    "version": 1,
+    "event_id": "2025_eva_air_marathon",
+    "checked_at": "2026-10-03T16:43:47.711454+00:00",
+    "method": "run2pix",
+    "sources": {
+      "MA": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20251026&Race=MA&sn=354",
+        "ranked_count": 2623,
+        "first_ten_seconds": [
+          8292,
+          8460,
+          8758,
+          8788,
+          8990,
+          9265,
+          9474,
+          9557,
+          9648,
+          9669
+        ]
+      },
+      "HM": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20251026&Race=HM&sn=355",
+        "ranked_count": 7145,
+        "first_ten_seconds": [
+          4031,
+          4105,
+          4187,
+          4218,
+          4341,
+          4399,
+          4416,
+          4432,
+          4452,
+          4484
+        ]
+      },
+      "10KM": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20251026&Race=10&sn=356",
+        "ranked_count": 6592,
+        "first_ten_seconds": [
+          1959,
+          1972,
+          1993,
+          1997,
+          2005,
+          2018,
+          2064,
+          2092,
+          2171,
+          2171
+        ]
+      }
+    },
+    "public_data_digest": "52e2610fee2a3b72e76e8e2e773dcc08b633594ab52e6b3c52d415344a736594"
+  },
+  "2025_panasonic_tpe": {
+    "version": 1,
+    "event_id": "2025_panasonic_tpe",
+    "checked_at": "2026-10-03T16:44:24.794485+00:00",
+    "method": "run2pix",
+    "sources": {
+      "10": {
+        "url": "https://www.run2pix.com/report/report_w.php?EventCode=20250914&Race=10&sn=350",
+        "ranked_count": 5749,
+        "first_ten_seconds": [
+          2414,
+          2468,
+          2479,
+          2567,
+          2571,
+          2623,
+          2629,
+          2636,
+          2702,
+          2702
+        ]
+      }
+    },
+    "public_data_digest": "47dc9ddd0c7895b3b3e3c060c14f42cbc265617be6704a87071f005e8927a3a6"
+  },
+  "2026_nat_geo_run": {
+    "version": 1,
+    "event_id": "2026_nat_geo_run",
+    "checked_at": "2026-10-03T18:52:44.729109+00:00",
+    "method": "bravelog_individual",
+    "sources": {
+      "10K(慢跑組)": {
+        "url": "https://www.bravelog.tw/contest/rank/2026042601",
+        "race_id": "1759",
+        "pages": 275,
+        "raw_count": 5500,
+        "profile_count": 5500,
+        "timed_count": 4811,
+        "ranked_count": 4493,
+        "excluded_timed": 318,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          2573,
+          2634,
+          2723,
+          2791,
+          2820,
+          2847,
+          2894,
+          2918,
+          2945,
+          2962
+        ],
+        "published_overall_denominators": [
+          5484
+        ]
+      },
+      "21K(半馬組)": {
+        "url": "https://www.bravelog.tw/contest/rank/2026042601",
+        "race_id": "1760",
+        "pages": 334,
+        "raw_count": 6676,
+        "profile_count": 6676,
+        "timed_count": 5926,
+        "ranked_count": 5916,
+        "excluded_timed": 10,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          4616,
+          4664,
+          4711,
+          4741,
+          4799,
+          4872,
+          4911,
+          4917,
+          4973,
+          5001
+        ],
+        "published_overall_denominators": [
+          6678
+        ]
+      },
+      "10K(挑戰組)": {
+        "url": "https://www.bravelog.tw/contest/rank/2026042601",
+        "race_id": "1761",
+        "pages": 252,
+        "raw_count": 5035,
+        "profile_count": 5035,
+        "timed_count": 4442,
+        "ranked_count": 4436,
+        "excluded_timed": 6,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          2074,
+          2089,
+          2235,
+          2254,
+          2280,
+          2293,
+          2301,
+          2323,
+          2325,
+          2328
+        ],
+        "published_overall_denominators": [
+          5013
+        ]
+      }
+    },
+    "public_data_digest": "f917056909c28db709a08ba107ddd32fed96e53634228a7b27204b6abc6a0dcb"
+  },
+  "2025_uniform_invoice_run": {
+    "version": 1,
+    "event_id": "2025_uniform_invoice_run",
+    "checked_at": "2026-10-03T19:34:19.676202+00:00",
+    "method": "bravelog_individual",
+    "sources": {
+      "半馬組(21km)": {
+        "url": "https://www.bravelog.tw/contest/rank/2025102602",
+        "race_id": "1589",
+        "pages": 121,
+        "raw_count": 2404,
+        "profile_count": 2404,
+        "timed_count": 2045,
+        "ranked_count": 2045,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          4082,
+          4110,
+          4377,
+          4384,
+          4554,
+          4663,
+          4734,
+          4790,
+          4835,
+          4857
+        ],
+        "published_overall_denominators": [
+          3000
+        ]
+      },
+      "挑戰組(10km)": {
+        "url": "https://www.bravelog.tw/contest/rank/2025102602",
+        "race_id": "1590",
+        "pages": 160,
+        "raw_count": 3198,
+        "profile_count": 3198,
+        "timed_count": 2600,
+        "ranked_count": 2600,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          2064,
+          2107,
+          2167,
+          2229,
+          2234,
+          2286,
+          2327,
+          2328,
+          2339,
+          2349
+        ],
+        "published_overall_denominators": [
+          3000
+        ]
+      }
+    },
+    "public_data_digest": "bd469bcc22fb2f61abd7bad77315516ff6cf4e153a7ab8bc00320fb5cbbabcc9"
+  },
+  "2026_tainan_kutou": {
+    "version": 1,
+    "event_id": "2026_tainan_kutou",
+    "checked_at": "2026-10-03T22:35:28.746217+00:00",
+    "method": "bravelog_individual",
+    "sources": {
+      "路跑組10km": {
+        "url": "https://www.bravelog.tw/contest/rank/2026030101",
+        "race_id": "1717",
+        "pages": 546,
+        "raw_count": 10916,
+        "profile_count": 10916,
+        "timed_count": 9649,
+        "ranked_count": 9649,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          1856,
+          1874,
+          1912,
+          1990,
+          2023,
+          2037,
+          2043,
+          2073,
+          2074,
+          2076
+        ],
+        "published_overall_denominators": [
+          10285
+        ]
+      },
+      "半程馬拉松21.0975km": {
+        "url": "https://www.bravelog.tw/contest/rank/2026030101",
+        "race_id": "1718",
+        "pages": 510,
+        "raw_count": 10191,
+        "profile_count": 10191,
+        "timed_count": 8665,
+        "ranked_count": 8665,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          3966,
+          4027,
+          4119,
+          4122,
+          4233,
+          4262,
+          4352,
+          4404,
+          4473,
+          4530
+        ],
+        "published_overall_denominators": [
+          10543
+        ]
+      }
+    },
+    "public_data_digest": "8679e9640efbcf92ea80112132a63c01eccbba6a0e2d770f8ada93b3f2710ae5"
+  },
+  "2025_chiayi_twinlake_elite": {
+    "version": 1,
+    "event_id": "2025_chiayi_twinlake_elite",
+    "checked_at": "2026-10-04T00:41:39.488578+00:00",
+    "method": "bravelog_individual",
+    "sources": {
+      "全馬組": {
+        "url": "https://www.bravelog.tw/contest/rank/2025113001",
+        "race_id": "1648",
+        "pages": 14,
+        "raw_count": 266,
+        "profile_count": 266,
+        "timed_count": 207,
+        "ranked_count": 193,
+        "excluded_timed": 14,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          8488,
+          8493,
+          8510,
+          8686,
+          8791,
+          9149,
+          9173,
+          9352,
+          9377,
+          9658
+        ],
+        "published_overall_denominators": [
+          469
+        ]
+      },
+      "半馬組": {
+        "url": "https://www.bravelog.tw/contest/rank/2025113001",
+        "race_id": "1649",
+        "pages": 39,
+        "raw_count": 779,
+        "profile_count": 779,
+        "timed_count": 670,
+        "ranked_count": 662,
+        "excluded_timed": 8,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          4056,
+          4064,
+          4278,
+          4279,
+          4473,
+          4482,
+          4671,
+          4672,
+          4759,
+          4881
+        ],
+        "published_overall_denominators": [
+          1132
+        ]
+      }
+    },
+    "public_data_digest": "f639e5de51110dfe7cb9945d36d8a4ca38ad19b97aeecff60d04ca6e5df1c7e8"
+  },
+  "2026_kaohsiung_fubon": {
+    "version": 1,
+    "event_id": "2026_kaohsiung_fubon",
+    "checked_at": "2026-10-04T02:15:04.459752+00:00",
+    "method": "bravelog_individual",
+    "sources": {
+      "半程馬拉松(21.0975km)": {
+        "url": "https://www.bravelog.tw/contest/rank/2026011001",
+        "race_id": "1681",
+        "pages": 336,
+        "raw_count": 6703,
+        "profile_count": 6703,
+        "timed_count": 5599,
+        "ranked_count": 5599,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          4135,
+          4152,
+          4166,
+          4170,
+          4298,
+          4399,
+          4469,
+          4554,
+          4566,
+          4605
+        ],
+        "published_overall_denominators": [
+          6721
+        ]
+      },
+      "馬拉松": {
+        "url": "https://www.bravelog.tw/contest/rank/2026011001",
+        "race_id": "1684",
+        "pages": 162,
+        "raw_count": 3230,
+        "profile_count": 3230,
+        "timed_count": 2768,
+        "ranked_count": 2768,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          8083,
+          8131,
+          8135,
+          8256,
+          8275,
+          8290,
+          8341,
+          8362,
+          8480,
+          8618
+        ],
+        "published_overall_denominators": [
+          3259,
+          6721
+        ]
+      }
+    },
+    "public_data_digest": "860717fcb861d79f60d11e6dd96c02ec2c6231f65b5c1f9e71ec40a174238d70"
+  },
+  "2026_puma_night_run": {
+    "version": 1,
+    "event_id": "2026_puma_night_run",
+    "checked_at": "2026-10-04T02:25:12.385926+00:00",
+    "method": "bravelog_individual",
+    "sources": {
+      "EliteRun菁英半馬組": {
+        "url": "https://www.bravelog.tw/contest/rank/2026032802",
+        "race_id": "1743",
+        "pages": 103,
+        "raw_count": 2044,
+        "profile_count": 2044,
+        "timed_count": 1783,
+        "ranked_count": 1783,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          4415,
+          4552,
+          4571,
+          4689,
+          4715,
+          4734,
+          4754,
+          4762,
+          4767,
+          4799
+        ],
+        "published_overall_denominators": [
+          1834
+        ]
+      },
+      "GlowRun螢光挑戰組": {
+        "url": "https://www.bravelog.tw/contest/rank/2026032802",
+        "race_id": "1744",
+        "pages": 239,
+        "raw_count": 4762,
+        "profile_count": 4762,
+        "timed_count": 3781,
+        "ranked_count": 3781,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          2039,
+          2048,
+          2120,
+          2254,
+          2259,
+          2282,
+          2285,
+          2286,
+          2297,
+          2320
+        ],
+        "published_overall_denominators": [
+          4308
+        ]
+      }
+    },
+    "public_data_digest": "286bc5c5ed5c441d26dda44addb5b471d364c9879b4bd7a16fa14271ff2d89ce"
+  },
+  "2025_taoyuan_maple_half": {
+    "version": 1,
+    "event_id": "2025_taoyuan_maple_half",
+    "checked_at": "2026-10-04T02:49:41.076022+00:00",
+    "method": "bravelog_individual",
+    "sources": {
+      "半程馬拉松": {
+        "url": "https://www.bravelog.tw/contest/rank/2025120702",
+        "race_id": "1657",
+        "pages": 61,
+        "raw_count": 1201,
+        "profile_count": 1201,
+        "timed_count": 895,
+        "ranked_count": 895,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          4268,
+          4272,
+          4392,
+          4562,
+          4853,
+          4968,
+          4982,
+          4989,
+          5037,
+          5092
+        ],
+        "unavailable_no_clock_count": 0,
+        "verified_profile_count": 1201,
+        "published_overall_denominators": [
+          1051
+        ]
+      },
+      "路跑組": {
+        "url": "https://www.bravelog.tw/contest/rank/2025120702",
+        "race_id": "1658",
+        "pages": 110,
+        "raw_count": 2195,
+        "profile_count": 2195,
+        "timed_count": 1485,
+        "ranked_count": 1485,
+        "excluded_timed": 0,
+        "restored_missing_clock": 0,
+        "first_ten_seconds": [
+          2043,
+          2082,
+          2157,
+          2251,
+          2314,
+          2488,
+          2500,
+          2631,
+          2632,
+          2642
+        ],
+        "unavailable_no_clock_count": 1,
+        "verified_profile_count": 2194,
+        "published_overall_denominators": [
+          1544
+        ]
+      }
+    },
+    "public_data_digest": "61f60e391f592d697d8da108abaea9472a7f05a80f14e4acd799325fb82a3032"
+  }
+}

@@ -30,6 +30,10 @@
     if (items.some(([value])=>value===preferred)) el.value=preferred;
   }
   const eventId = () => $('event').value;
+  function updateEvents(preferred=eventId()) {
+    const available=events.filter(e=>e.metadata.event_date.slice(0,4)===$('year').value);
+    options('event',available.map(e=>[e.metadata.event_id,e.metadata.event_name]),preferred);
+  }
   const distance = (id,race) => eventById.get(id)?.metadata.race_distances_km?.[race];
   const distanceName = km => km===21.0975?'半馬 · 21.0975K':km===42.195?'全馬 · 42.195K':km?`${km} 公里`:'距離未設定';
   function raceName(id,race) {
@@ -227,7 +231,14 @@
   function refresh() {
     const e=eventById.get(eventId());
     $('context').replaceChildren(document.createTextNode(`${e.metadata.event_date} · ${populationName()} · ${num(current().length)} 位有效完賽者 · `));
-    if(/^https:\/\//.test(e.metadata.source_url||'')){const a=document.createElement('a');a.href=e.metadata.source_url;a.target='_blank';a.rel='noopener';a.textContent='查看成績來源 ↗';$('context').append(a);}
+    const auditedSource=e.metadata.ranking_audit?.sources?.[$('race').value];
+    const sourceGap=auditedSource?.unavailable_no_clock_count||0;
+    const notes=[e.metadata.notes,sourceGap?`來源有 ${num(sourceGap)} 筆未提供時間且個人成績頁無法找到，未納入比較。`:null].filter(Boolean).join(' ');
+    $('eventNotes').textContent=notes;
+    $('eventNotes').hidden=!notes;
+    let sourceUrl=auditedSource?.url||e.metadata.source_url||'';
+    if(auditedSource?.race_id){const url=new URL(sourceUrl);url.searchParams.set('raceId',auditedSource.race_id);sourceUrl=url.href;}
+    if(/^https:\/\//.test(sourceUrl)){const a=document.createElement('a');a.href=sourceUrl;a.target='_blank';a.rel='noopener';a.textContent='查看成績來源 ↗';$('context').append(a);}
     $('shareStatus').textContent='';renderPosition();renderTarget();renderRankTargets();
     if(activeTab==='position')drawHistogram();if(activeTab==='compare')renderCompare();
   }
@@ -239,7 +250,7 @@
   }
   function shareUrl() {
     const url=new URL(location.href);url.search='';url.hash='';
-    for(const [key,value] of Object.entries({event:eventId(),race:$('race').value,category:$('category').value,population:$('population').value,time:sec,pr:$('targetPr').value,place:$('targetPlace').value,targetGroup:$('targetGroup').value,tab:activeTab}))url.searchParams.set(key,value);
+    for(const [key,value] of Object.entries({year:$('year').value,event:eventId(),race:$('race').value,category:$('category').value,population:$('population').value,time:sec,pr:$('targetPr').value,place:$('targetPlace').value,targetGroup:$('targetGroup').value,tab:activeTab}))url.searchParams.set(key,value);
     return url.href;
   }
   $('share').addEventListener('click',async()=>{
@@ -248,6 +259,7 @@
     try{await navigator.clipboard.writeText(url);$('shareStatus').textContent='已複製查詢連結。';}catch{$('shareStatus').textContent='請複製網址列中的查詢連結。';}
   });
   $('event').addEventListener('change',()=>{updateRaces($('race').value);refresh();});
+  $('year').addEventListener('change',()=>{updateEvents();updateRaces($('race').value);refresh();});
   $('race').addEventListener('change',()=>{updateCategories();refresh();});
   $('category').addEventListener('change',()=>{updatePopulations();refresh();});
   $('population').addEventListener('change',()=>{updateTargetGroups();refresh();});
@@ -266,9 +278,24 @@
   document.querySelectorAll('[data-pr]').forEach(b=>b.addEventListener('click',()=>{$('targetPr').value=b.dataset.pr;renderTarget();}));
   document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{readTime();setTab(b.dataset.tab);}));
   $('range').addEventListener('change',drawHistogram);$('sort').addEventListener('change',renderCompare);$('compareChartType').addEventListener('change',drawComparison);
-    if(!events.length){$('coverage').textContent='目前沒有可用成績';document.querySelectorAll('button,input,select').forEach(el=>el.disabled=true);return;}
+  const unavailable = failed?.filter(Boolean) || [];
+  if (unavailable.length) {
+    $('loadIssues').hidden = false;
+    for (const name of unavailable) {
+      const item = document.createElement('li');item.textContent = name;$('loadIssueList').append(item);
+    }
+  }
+  if(!events.length){$('coverage').textContent='目前沒有可用成績';document.querySelectorAll('button,input,select').forEach(el=>el.disabled=true);return;}
   const params=new URLSearchParams(location.search);
-  options('event',events.map(e=>[e.metadata.event_id,e.metadata.event_name]),params.get('event'));
+  const years=[...new Set(events.map(e=>e.metadata.event_date.slice(0,4)))].sort().reverse();
+  const linkedEvent=eventById.get(params.get('event'));
+  const requested = (window.RunEventCatalog || []).find(entry=>entry.metadata.event_id===params.get('event'));
+  if (requested && !linkedEvent) {
+    $('requestedEventNotice').hidden=false;
+    $('requestedEventNotice').textContent=`連結中的「${requested.metadata.event_name}」尚未完成來源查核或載入，已先顯示其他可用賽事。`;
+  }
+  options('year',years.map(year=>[year,`${year} 年`]),linkedEvent?.metadata.event_date.slice(0,4)||params.get('year'));
+  updateEvents(params.get('event'));
   updateRaces(params.get('race'));updateCategories(params.get('category')||'一般');
   updatePopulations(params.get('population')||'ALL');
   const t=Number(params.get('time'));if(params.has('time')&&Number.isInteger(t)&&t>=0&&t<=86399){$('hours').value=Math.floor(t/3600);$('minutes').value=Math.floor(t%3600/60);$('seconds').value=t%60;}
@@ -276,6 +303,6 @@
   if(['1','3','5','10','20','50'].includes(params.get('place')))$('targetPlace').value=params.get('place');
   if([...$('targetGroup').options].some(o=>o.value===params.get('targetGroup')))$('targetGroup').value=params.get('targetGroup');
   $('coverage').textContent=`${events.length} 場賽事 · ${[...new Set(events.map(e=>e.metadata.event_date.slice(0,4)))].sort().join('–')}`;
-  if(failed?.some(Boolean))$('coverage').textContent+=` · ${failed.filter(Boolean).length} 場載入失敗，請重整`;
+  if(failed?.some(Boolean))$('coverage').textContent+=` · ${failed.filter(Boolean).length} 場來源查核或載入未完成，暫不參與比較`;
   readTime();setTab(params.get('tab'));
 })();
