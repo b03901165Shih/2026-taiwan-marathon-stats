@@ -1,6 +1,16 @@
 (async () => {
   'use strict';
-  const failed = await window.RunDataReady;
+  const store = window.RunDataStore;
+  const catalog = store.catalog.slice().sort((a,b) => b.metadata.event_date.localeCompare(a.metadata.event_date));
+  const params = new URLSearchParams(location.search);
+  const preferredId = params.get('event');
+  const candidates = catalog.filter(entry => store.status(entry.metadata.event_id) !== 'failed');
+  const firstChoices = [candidates.find(entry => entry.metadata.event_id === preferredId), ...candidates].filter(Boolean);
+  let firstEvent = null;
+  for (const entry of firstChoices) {
+    firstEvent = await store.load(entry.metadata.event_id);
+    if (firstEvent) break;
+  }
   const S = window.RunStats;
   const A = window.RunAge;
   const $ = id => document.getElementById(id);
@@ -8,14 +18,14 @@
   const num = n => n.toLocaleString('zh-TW');
   const pct = n => n.toFixed(2) + '%';
   const colors = ['#127b68','#5974c5','#c77736','#9465ad','#cb6270','#408da3','#7a8837','#766453','#4c5979','#8c6a31'];
-  const events = Object.values(window.marathonData || {}).filter(e => Object.keys(e.binsAndPr || {}).length).sort((a,b) => b.metadata.event_date.localeCompare(a.metadata.event_date));
+  const events = firstEvent ? [firstEvent] : [];
   const eventById = new Map(events.map(e => [e.metadata.event_id,e]));
   const raceIndex = new Map(), cache = new Map();
   let histChart, compareChart, rows = [], skipped = [], selectedCharts = new Set(), comparisonKey = '';
   let activeTab = 'position', sec = 5400, timeValid = true;
 
-  // Index source groups once; all queries use exactly the same population filter.
-  for (const e of events) {
+  // Index each event once, including those arriving after the first interactive paint.
+  function indexEvent(e) {
     const races = new Map();
     for (const [key,value] of Object.entries(e.binsAndPr)) {
       const [,race,group] = key.split('__');
@@ -25,14 +35,16 @@
     }
     raceIndex.set(e.metadata.event_id,races);
   }
+  for (const e of events) indexEvent(e);
   function options(id, items, preferred) {
     const el=$(id); el.replaceChildren(...items.map(([value,label]) => new Option(label,value)));
     if (items.some(([value])=>value===preferred)) el.value=preferred;
   }
   const eventId = () => $('event').value;
   function updateEvents(preferred=eventId()) {
-    const available=events.filter(e=>e.metadata.event_date.slice(0,4)===$('year').value);
-    options('event',available.map(e=>[e.metadata.event_id,e.metadata.event_name]),preferred);
+    const available=catalog.filter(entry=>entry.metadata.event_date.slice(0,4)===$('year').value
+      && store.status(entry.metadata.event_id)!=='failed');
+    options('event',available.map(entry=>[entry.metadata.event_id,entry.metadata.event_name]),preferred);
   }
   const distance = (id,race) => eventById.get(id)?.metadata.race_distances_km?.[race];
   const distanceName = km => km===21.0975?'半馬 · 21.0975K':km===42.195?'全馬 · 42.195K':km?`${km} 公里`:'距離未設定';
@@ -173,7 +185,7 @@
     const points=[];for(let b=Math.floor(arr[0]/300);b<end/300;b++)points.push({x:b*5+2.5,y:counts.get(b)||0});
     const hidden=arr.length-S.lowerBound(arr,end);
     $('tailNote').textContent=`每柱涵蓋 5 分鐘區間。${hidden?`另有 ${num(hidden)} 筆 ${S.time(end)} 以後的成績未繪製；排名與 PR 仍使用完整資料。`:'已顯示全部成績。'}${timeValid&&sec>=end?' 你的時間位於圖表範圍之外。':''}`;
-    if (!window.Chart) {$('tailNote').textContent+=' 圖表套件載入失敗，請確認網路後重整。';return;}
+    if (!window.Chart) {$('tailNote').textContent+=' 圖表套件載入中；排名與 PR 可先查詢。';return;}
     const opts=chartOptions('人數');opts.plugins.timeMarker={sec:timeValid?sec:null};
     opts.plugins.tooltip.callbacks.title=items=>{const start=(items[0].parsed.x-2.5)*60;return `${S.time(start)}–${S.time(start+300)}（不含終點）`;};
     histChart=new Chart($('histCanvas'),{type:'bar',data:{datasets:[{label:'完賽人數',data:points,backgroundColor:points.map(p=>timeValid&&sec>=((p.x-2.5)*60)&&sec<((p.x+2.5)*60)?'#b6d94c':'#127b68aa'),borderRadius:3}]},options:opts,plugins:[markerPlugin]});
@@ -197,7 +209,10 @@
     $('ageCompareNote').hidden=!age;
     $('ageCompareNote').innerHTML=age?`<strong>年齡組比較：${esc(A.label(age))}</strong><p>只納入性別及公布年齡範圍一致的組別；若原始分組較細，會合併完整相鄰組。各場年齡採計方式以簡章為準，不會從寬泛組別推估個別年齡。</p>${skipped.length?`<details><summary>${skipped.length} 個同距離賽別未納入：無相同範圍或分組定義待確認</summary><ul>${skipped.map(r=>`<li>${esc(r.event.event_name)} · ${esc(raceName(r.event.event_id,r.race))}</li>`).join('')}</ul></details>`:''}`:'';
     if(!ref){$('compareIntro').textContent=$('population').value.startsWith('group:')?'細分組可查單場分布、排名與目標時間。跨場分組界線尚未標準化，請選全體、男性或女性來比較。':'目前基準無可比較資料，請先選擇有效族群與時間。';$('compareResult').replaceChildren();$('chartChoices').replaceChildren();$('compareChartNote').textContent='';destroyChart('compare');return;}
-    $('compareIntro').textContent=`${distanceName(distance(eventId(),$('race').value))} · ${populationName()} · ${S.time(sec)}。參考賽事 PR ${pct(ref.m.pr)}，列出 ${rows.length} 個可比較賽別。`;
+    const km=distance(eventId(),$('race').value);
+    const pending=catalog.filter(entry=>Object.values(entry.metadata.race_distances_km || {}).includes(km)
+      && store.status(entry.metadata.event_id)!=='loaded' && store.status(entry.metadata.event_id)!=='failed').length;
+    $('compareIntro').textContent=`${distanceName(km)} · ${populationName()} · ${S.time(sec)}。參考賽事 PR ${pct(ref.m.pr)}，目前列出 ${rows.length} 個可比較賽別。${pending?`另有 ${pending} 場同距離賽事載入中。`:''}`;
     const sort=$('sort').value;
     rows.sort((a,b)=>sort==='pr'?b.m.pr-a.m.pr:sort==='count'?b.m.total-a.m.total:sort==='target'?(a.target?.sec??Infinity)-(b.target?.sec??Infinity):b.event.event_date.localeCompare(a.event.event_date));
     $('compareResult').innerHTML=table(['賽事 / 賽別','完賽人數','同時間排名','同時間 PR','與參考差距','同 PR 最慢時間','實際 PR'],rows.map(r=>`<tr${r.reference?' class="reference"':''}><td>${esc(r.event.event_name)}${r.reference?'<span class="badge">參考</span>':''}<span class="row-sub">${r.event.event_date} · ${esc(raceName(r.id,r.race))}</span>${age?`<span class="row-sub">原始分組：${esc(r.sourceGroups.map(g=>A.groupLabel(g)).join(' + '))}${r.sourceGroups[0]?.age?.source?` · <a href="${esc(r.sourceGroups[0].age.source)}" target="_blank" rel="noopener">分組依據 ↗</a>`:''}</span>`:''}</td><td>${num(r.m.total)}</td><td>${rank(r.m)}</td><td class="pr-cell">${pct(r.m.pr)}</td><td>${r.reference?'—':`${r.m.pr-ref.m.pr>=0?'+':''}${(r.m.pr-ref.m.pr).toFixed(2)} 個百分點`}</td><td>${S.time(r.target?.sec)}${r.target?.unbounded?'<span class="row-sub">PR 0 無時間上限</span>':''}</td><td>${r.target?pct(r.target.pr):'—'}</td></tr>`));
@@ -230,6 +245,17 @@
   }
   function refresh() {
     const e=eventById.get(eventId());
+    if (!e) {
+      $('context').textContent='正在載入所選賽事的成績…';
+      $('positionResult').innerHTML='<p class="empty">成績載入中，請稍候。</p>';
+      $('compareIntro').textContent='成績載入中，請稍候。';
+      $('targetResult').replaceChildren();
+      $('groupResult').replaceChildren();$('rankTargetResult').replaceChildren();
+      $('compareResult').replaceChildren();$('chartChoices').replaceChildren();
+      $('distributionSummary').replaceChildren();$('tailNote').textContent='';
+      destroyChart('hist');destroyChart('compare');
+      return;
+    }
     $('context').replaceChildren(document.createTextNode(`${e.metadata.event_date} · ${populationName()} · ${num(current().length)} 位有效完賽者 · `));
     const auditedSource=e.metadata.ranking_audit?.sources?.[$('race').value];
     const sourceGap=auditedSource?.unavailable_no_clock_count||0;
@@ -240,7 +266,30 @@
     if(auditedSource?.race_id){const url=new URL(sourceUrl);url.searchParams.set('raceId',auditedSource.race_id);sourceUrl=url.href;}
     if(/^https:\/\//.test(sourceUrl)){const a=document.createElement('a');a.href=sourceUrl;a.target='_blank';a.rel='noopener';a.textContent='查看成績來源 ↗';$('context').append(a);}
     $('shareStatus').textContent='';renderPosition();renderTarget();renderRankTargets();
-    if(activeTab==='position')drawHistogram();if(activeTab==='compare')renderCompare();
+    if(activeTab==='position')drawHistogram();
+    if(activeTab==='compare'){renderCompare();requestComparisonLoads();}
+  }
+  const comparisonPending = new Set();
+  function requestComparisonLoads() {
+    const km=distance(eventId(),$('race').value);
+    if (!km) return;
+    let inFlight=[...comparisonPending].filter(id=>catalog.some(entry=>entry.metadata.event_id===id
+      && Object.values(entry.metadata.race_distances_km || {}).includes(km))).length;
+    for (const entry of catalog.slice().reverse()) {
+      if (inFlight>=2) break;
+      const id=entry.metadata.event_id;
+      if (!Object.values(entry.metadata.race_distances_km || {}).includes(km)
+          || store.status(id)==='loaded' || store.status(id)==='failed' || comparisonPending.has(id)) continue;
+      comparisonPending.add(id);
+      inFlight++;
+      store.load(id, true, true).then(() => {
+        comparisonPending.delete(id);
+        if (activeTab==='compare' && eventById.has(eventId())
+            && distance(eventId(),$('race').value)===km) {
+          renderCompare();requestComparisonLoads();
+        }
+      });
+    }
   }
   function setTab(tab) {
     activeTab=['position','target','compare'].includes(tab)?tab:'position';
@@ -258,8 +307,24 @@
     const url=shareUrl();history.replaceState(null,'',url);
     try{await navigator.clipboard.writeText(url);$('shareStatus').textContent='已複製查詢連結。';}catch{$('shareStatus').textContent='請複製網址列中的查詢連結。';}
   });
-  $('event').addEventListener('change',()=>{updateRaces($('race').value);refresh();});
-  $('year').addEventListener('change',()=>{updateEvents();updateRaces($('race').value);refresh();});
+  let selectionToken=0;
+  async function selectEvent() {
+    const id=eventId(), token=++selectionToken, previousRace=$('race').value;
+    if (!eventById.has(id)) {
+      refresh();
+      const event=await store.load(id, true, true);
+      if (token!==selectionToken || eventId()!==id) return;
+      if (!event) {
+        $('requestedEventNotice').hidden=false;
+        $('requestedEventNotice').textContent='此賽事尚未完成來源查核或載入失敗，已回到其他可用賽事。';
+        $('year').value=firstEvent.metadata.event_date.slice(0,4);
+        updateEvents(firstEvent.metadata.event_id);
+      }
+    }
+    updateRaces(previousRace);refresh();
+  }
+  $('event').addEventListener('change',selectEvent);
+  $('year').addEventListener('change',()=>{updateEvents();selectEvent();});
   $('race').addEventListener('change',()=>{updateCategories();refresh();});
   $('category').addEventListener('change',()=>{updatePopulations();refresh();});
   $('population').addEventListener('change',()=>{updateTargetGroups();refresh();});
@@ -278,23 +343,37 @@
   document.querySelectorAll('[data-pr]').forEach(b=>b.addEventListener('click',()=>{$('targetPr').value=b.dataset.pr;renderTarget();}));
   document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{readTime();setTab(b.dataset.tab);}));
   $('range').addEventListener('change',drawHistogram);$('sort').addEventListener('change',renderCompare);$('compareChartType').addEventListener('change',drawComparison);
-  const unavailable = failed?.filter(Boolean) || [];
-  if (unavailable.length) {
-    $('loadIssues').hidden = false;
-    for (const name of unavailable) {
-      const item = document.createElement('li');item.textContent = name;$('loadIssueList').append(item);
+  $('chartLibrary').addEventListener('load',()=>{
+    if(activeTab==='position' && eventById.has(eventId()))drawHistogram();
+    if(activeTab==='compare' && eventById.has(eventId()))drawComparison();
+  });
+  const chartUnavailable=()=>{
+    if(window.Chart)return;
+    if(activeTab==='position')$('tailNote').textContent='圖表套件無法載入；文字排名與 PR 仍可使用。';
+    if(activeTab==='compare')$('compareChartNote').textContent='圖表套件無法載入；比較表格仍可使用。';
+  };
+  $('chartLibrary').addEventListener('error',chartUnavailable);
+  window.addEventListener('load',chartUnavailable);
+  function showLoadIssues() {
+    $('loadIssueList').replaceChildren();
+    for (const [id, reason] of store.failures) {
+      const entry=catalog.find(item=>item.metadata.event_id===id);
+      const item=document.createElement('li');
+      item.textContent=`${entry?.metadata.event_name || id}（${reason}）`;
+      $('loadIssueList').append(item);
     }
+    $('loadIssues').hidden=!store.failures.size;
   }
+  showLoadIssues();
   if(!events.length){$('coverage').textContent='目前沒有可用成績';document.querySelectorAll('button,input,select').forEach(el=>el.disabled=true);return;}
-  const params=new URLSearchParams(location.search);
-  const years=[...new Set(events.map(e=>e.metadata.event_date.slice(0,4)))].sort().reverse();
+  const years=[...new Set(candidates.map(e=>e.metadata.event_date.slice(0,4)))].sort().reverse();
   const linkedEvent=eventById.get(params.get('event'));
   const requested = (window.RunEventCatalog || []).find(entry=>entry.metadata.event_id===params.get('event'));
   if (requested && !linkedEvent) {
     $('requestedEventNotice').hidden=false;
     $('requestedEventNotice').textContent=`連結中的「${requested.metadata.event_name}」尚未完成來源查核或載入，已先顯示其他可用賽事。`;
   }
-  options('year',years.map(year=>[year,`${year} 年`]),linkedEvent?.metadata.event_date.slice(0,4)||params.get('year'));
+  options('year',years.map(year=>[year,`${year} 年`]),firstEvent.metadata.event_date.slice(0,4));
   updateEvents(params.get('event'));
   updateRaces(params.get('race'));updateCategories(params.get('category')||'一般');
   updatePopulations(params.get('population')||'ALL');
@@ -302,7 +381,26 @@
   if(params.has('pr'))$('targetPr').value=params.get('pr');
   if(['1','3','5','10','20','50'].includes(params.get('place')))$('targetPlace').value=params.get('place');
   if([...$('targetGroup').options].some(o=>o.value===params.get('targetGroup')))$('targetGroup').value=params.get('targetGroup');
-  $('coverage').textContent=`${events.length} 場賽事 · ${[...new Set(events.map(e=>e.metadata.event_date.slice(0,4)))].sort().join('–')}`;
-  if(failed?.some(Boolean))$('coverage').textContent+=` · ${failed.filter(Boolean).length} 場來源查核或載入未完成，暫不參與比較`;
+  $('coverage').textContent=`${candidates.length} 場賽事 · ${years.slice().reverse().join('–')}`;
   readTime();setTab(params.get('tab'));
+
+  store.subscribe(({id,event}) => {
+    if (event && !eventById.has(id)) {
+      eventById.set(id,event);events.push(event);
+      events.sort((a,b)=>b.metadata.event_date.localeCompare(a.metadata.event_date));
+      indexEvent(event);
+      if (activeTab==='compare' && id!==eventId() && !comparisonPending.has(id)
+          && eventById.has(eventId())) renderCompare();
+    }
+    showLoadIssues();
+  });
+  const firstKm=distance(firstEvent.metadata.event_id,$('race').value);
+  const nearby=catalog.filter(entry=>entry.metadata.event_id!==firstEvent.metadata.event_id
+    && store.status(entry.metadata.event_id)!=='failed')
+    .sort((a,b)=>Number(Object.values(b.metadata.race_distances_km || {}).includes(firstKm))
+      -Number(Object.values(a.metadata.race_distances_km || {}).includes(firstKm)))
+    .slice(0,2).map(entry=>entry.metadata.event_id);
+  const warm=()=>store.prefetch(nearby);
+  if ('requestIdleCallback' in window) requestIdleCallback(warm,{timeout:2000});
+  else setTimeout(warm,800);
 })();
