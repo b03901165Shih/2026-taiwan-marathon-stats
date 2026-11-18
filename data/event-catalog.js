@@ -709,6 +709,25 @@ window.RunEventCatalog = [
     }
   },
   {
+    "src": "data/2026_eva_air_marathon_data.js",
+    "requires_ranking_audit": false,
+    "ranking_audit": null,
+    "metadata": {
+      "event_id": "2026_eva_air_marathon",
+      "event_name": "2026 長榮航空馬拉松",
+      "event_date": "2026-10-25",
+      "race_distances_km": {
+        "MA": 42.195,
+        "HM": 21.0975,
+        "10KM": 10
+      },
+      "source_url": "https://www.racelog.tw/event.php?id=108",
+      "notes": "RaceLog 收錄 16,083 筆個人成績；本站公開列表未提供官方排名，PR 試算依 RaceLog 有完賽時間紀錄計算，無時間紀錄保留於來源 Excel 但不納入。",
+      "group_age_ranges": {},
+      "group_age_source": ""
+    }
+  },
+  {
     "src": "data/2026_teca_electric_cup_data.js",
     "requires_ranking_audit": false,
     "ranking_audit": null,
