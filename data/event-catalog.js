@@ -709,6 +709,24 @@ window.RunEventCatalog = [
     }
   },
   {
+    "src": "data/2026_teca_electric_cup_data.js",
+    "requires_ranking_audit": false,
+    "ranking_audit": null,
+    "metadata": {
+      "event_id": "2026_teca_electric_cup",
+      "event_name": "2026 第十二屆電器盃節能公益路跑",
+      "event_date": "2026-11-15",
+      "race_distances_km": {
+        "21公里組": 21,
+        "10公里組": 10
+      },
+      "source_url": "https://racelog.tw/event.php?id=130",
+      "notes": "RaceLog 收錄21公里組及10公里組合計2,523筆個人成績；PR依公開完賽時間試算，非主辦單位正式排名。4公里組不採晶片計時，未納入。21K甲至己組歲數尚未核實，不提供分齡跨場比較。",
+      "group_age_ranges": {},
+      "group_age_source": ""
+    }
+  },
+  {
     "src": "data/2025_panasonic_tpe_data.js",
     "requires_ranking_audit": true,
     "ranking_audit": {

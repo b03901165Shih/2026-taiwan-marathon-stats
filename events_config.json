@@ -363,6 +363,31 @@
       "ranking_report_name": "2025長榮航空馬拉松"
     },
     {
+      "id": "2026_teca_electric_cup",
+      "name": "2026 第十二屆電器盃節能公益路跑",
+      "excel": "2026_第十二屆電器盃節能公益路跑_完整成績.xlsx",
+      "date": "2026-11-15",
+      "race_types": [
+        "21公里組",
+        "10公里組"
+      ],
+      "race_distances_km": {
+        "21公里組": 21,
+        "10公里組": 10
+      },
+      "total_count": 2523,
+      "source_url": "https://racelog.tw/event.php?id=130",
+      "racelog_source_url": "https://racelog.tw/event.php?id=130",
+      "racelog_event_name": "2026 第十二屆電器盃節能公益路跑",
+      "racelog_filters": {
+        "21公里組": "21公里組",
+        "10公里組": "10公里組"
+      },
+      "result_source": "racelog",
+      "status": "RaceLog 成績來源待補",
+      "notes": "RaceLog 收錄21公里組及10公里組合計2,523筆個人成績；PR依公開完賽時間試算，非主辦單位正式排名。4公里組不採晶片計時，未納入。21K甲至己組歲數尚未核實，不提供分齡跨場比較。"
+    },
+    {
       "id": "2025_panasonic_tpe",
       "name": "2025 Panasonic TAIPEI CITY RUN台北城市路跑賽",
       "excel": "2025_Panasonic台北城市路跑_完整成績.xlsx",
