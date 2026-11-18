@@ -25,13 +25,16 @@ class PublicSourceHTTPError(ValueError):
 def read_page(url):
     from urllib.parse import urlsplit
     parts = urlsplit(url)
-    if parts.scheme != 'https' or parts.netloc != 'www.bravelog.tw':
+    if parts.scheme != 'https' or parts.hostname not in ('www.bravelog.tw', 'bravelog.tw') or parts.port:
         raise ValueError('Expected a public HTTPS BraveLog URL')
+    # BraveLog redirects the historical www host to its canonical bare domain.
+    # Connect directly to the same site so requests do not fail on HTTP 301.
+    host = 'bravelog.tw'
     for attempt in range(3):
         try:
             connection = getattr(_connections, 'brave', None)
             if connection is None:
-                connection = http.client.HTTPSConnection(parts.netloc, timeout=40)
+                connection = http.client.HTTPSConnection(host, timeout=40)
                 _connections.brave = connection
             connection.request('GET', parts.path + ('?' + parts.query if parts.query else ''),
                                headers={'User-Agent': 'Mozilla/5.0', 'Accept': 'text/html', 'Accept-Encoding': 'gzip'})

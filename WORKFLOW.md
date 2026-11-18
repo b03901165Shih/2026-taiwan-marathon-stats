@@ -55,19 +55,22 @@ python extract_excel_result.py --event-id 2025_pocari_run
 
 族群選單依來源實際提供的性別顯示，單純「男／女」分組不重複列入其他原始分組；團隊原始分組不含性別時不推估性別。
 
-### BraveLog、全統及官方 PDF
+### RaceLog、BraveLog、全統及官方 PDF
 
-三種來源都沿用「填設定 → 取得本機 Excel → 轉成網頁資料」，不需要逐場修改程式。安裝 Excel 依賴：`python -m pip install pandas openpyxl`；只有 PDF 來源額外需要 `pypdf`。
+各來源都沿用「填設定 → 取得本機 Excel → 轉成網頁資料」，不需要逐場修改程式。安裝 Excel 依賴：`python -m pip install pandas openpyxl`；只有 PDF 來源額外需要 `pypdf`。
 
 | 來源 | 在設定中增加 | 匯入命令範例 |
 | --- | --- | --- |
+| RaceLog | RaceLog event URL `racelog_source_url`、`result_source: "racelog"`；若組別文字不能由距離唯一對應，增加 `racelog_filters`（頁面類別名稱 → 專案賽別） | `python scrap_racelog.py --event-id 2026_teca_electric_cup` |
 | BraveLog | 官方排名 `source_url`、`bravelog_filters`（頁面 `raceId` → 完整賽別名稱）、`ranking_validation` | `python audit_bravelog.py --event-id 2025_chiayi_twinlake_elite` |
 | 全統 | 官方 `https://accounter.ctrun.com.tw/RSIS/Result/活動代碼`、`race_types` 完整名稱；賽別 ID 自動讀取 | `python scrap_ctrun.py --event-id 2026_zepro_taichung` |
 | 官方排名 PDF | `pdf_ranking_sources`，每份填 `url`、`race`、`group`、`expected_count` | `python import_ranking_pdf.py --event-id 2026_wanjinshi_marathon` |
 
 設定可直接複製本次對應賽事。匯入後一律執行 `python extract_excel_result.py --event-id 相同ID`。PDF 適用「排名／背號／姓名／國籍／時間」欄位的文字型公告；其他格式需要新增解析器，不能直接套用。`expected_count` 必須從公告末筆排名核實，不是報名上限。
 
-BraveLog 完整流程另見下方「排名資格強制查核」；全統另比對 API 總筆數及實際頁碼。全統 ticks 依原頁顯示方式取整秒，零值視為無有效成績。PDF 逐筆核對連續排名、背號不重複、公告筆數，並支援欄位相連及姓名換行。所有匯入完成後才寫 Excel，分頁缺漏時停止，不輸出部分成果。公開排名不是報名人數，無有效時間者不進前端統計；各來源可能未公開所有 DNS／DNF。
+RaceLog 可用 `--url https://racelog.tw/event.php?id=108` 臨時指定長榮來源，或 `--url https://racelog.tw/event.php?id=130` 臨時指定電器盃來源；也可在賽事設定中填 `racelog_source_url`。程式會從 event 頁面找出每個類別 ID，下載 `view=individual` 的完整列表；類別名稱與 `race_types` 一致時直接配對，否則用 `race_distances_km` 唯一比對（例如 MA/HM/10KM），不唯一時明確要求補上 `racelog_filters`，不猜測。每頁的來源總筆數必須等於解析到的列數，背號不得重複、時間必須符合 HH:MM:SS。無時間列也保留在「完整成績」工作表並設 `排名資格=False`。RaceLog 未提供排名欄位時，不會偽造 `來源總排名`；有完賽時間的列可用於本站時間排名／PR 試算。RaceLog 標示「來源待補」的場次應在 `notes` 說明，來源日後更新時重跑匯入及轉檔。
+
+BraveLog 完整流程另見下方「排名資格強制查核」；匯入器連到 BraveLog 的標準網域，處理舊 `www` 網址轉址。全統另比對 API 總筆數及實際頁碼。全統 ticks 依原頁顯示方式取整秒，零值視為無有效成績。PDF 逐筆核對連續排名、背號不重複、公告筆數，並支援欄位相連及姓名換行。所有匯入完成後才寫 Excel，分頁缺漏時停止，不輸出部分成果。公開排名不是報名人數，無有效時間者不進前端統計；各來源可能未公開所有 DNS／DNF。
 
 只讀取公開排名，不需要登入或解鎖個人成績證書。PDF 只有性別時保留性別，不依姓名、背號或賽事年齡表猜測逐人分齡。
 
@@ -133,6 +136,7 @@ PUMA 日期已依 [BraveLog 賽事頁](https://www.bravelog.tw/contest/202603280
 | `events_config.json` | 人工維護的賽事、距離及年齡定義。 |
 | `extract_excel_result.py` | Excel → 時間資料；設定 → 賽事清單，含設定驗證。 |
 | `scrap_irunner.py` | 依賽事設定分頁下載官方公開個人成績，保存本機 Excel。 |
+| `scrap_racelog.py` | 自動發現 RaceLog 組別並匯入完整個人成績，核對頁面計數、時間及重複背號。 |
 | `scrap_bravelog.py`／`scrap_ctrun.py` | 通用公開排名匯入，驗證分頁與背號。 |
 | `audit_bravelog.py`／`qualify_run2pix.py`／`ranking_validation.py` | 完整資格查核、正式報表解析及查核憑據／轉檔防漏；舊指令也進入相同流程。 |
 | `import_ranking_pdf.py` | 固定欄位的官方文字 PDF 匯入與公告筆數核對。 |

@@ -8,6 +8,8 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import scrap_bravelog as brave
 import scrap_ctrun as ct
+import scrap_racelog as racelog
+from ranking_validation import is_bravelog
 from import_ranking_pdf import parse_ranked_text
 
 
@@ -20,6 +22,56 @@ def brave_page(bib='12', number=1, total=1):
 
 
 class PublicImportTests(unittest.TestCase):
+    def racelog_page(self, count='1', timed='1', untimed='0', race='HM'):
+        return f'''<form><input type="hidden" name="id" value="108"></form>
+        <div>目前顯示 <strong>{count}</strong> 筆個人成績（有完賽時間 <strong>{timed}</strong>、
+        無完賽時間 <strong>{untimed}</strong>）</div>
+        <table><thead><tr><th>總排名</th><th>號碼布</th><th>選手</th><th>組別</th><th>性別</th>
+        <th>年齡組</th><th>完賽時間</th><th>性別排名</th><th>分組排名</th></tr></thead>
+        <tbody><tr><td>—</td><td>008262</td><td>Runner A</td><td>{race}</td><td>男</td>
+        <td>男17-35歲</td><td>01:06:56</td><td>—</td><td>—</td></tr></tbody></table>'''
+
+    def test_racelog_parse_validates_counts_and_preserves_bib(self):
+        rows, count = racelog.parse_page(self.racelog_page(), '108', 'HM')
+        self.assertEqual(count, 1)
+        self.assertEqual(rows[0]['背號'], '008262')
+        self.assertTrue(rows[0]['排名資格'])
+
+    def test_racelog_preserves_no_time_rows_but_excludes_them(self):
+        page = '''<form><input type="hidden" name="id" value="108"></form>
+        <div>目前顯示 <strong>1</strong> 筆個人成績（有完賽時間 <strong>0</strong>、
+        無完賽時間 <strong>1</strong>）</div>
+        <table><thead><tr><th>總排名</th><th>號碼布</th><th>選手</th><th>組別</th><th>性別</th>
+        <th>年齡組</th><th>完賽時間</th><th>性別排名</th><th>分組排名</th></tr></thead></table>
+        <table><thead><tr><th>號碼布</th><th>選手</th><th>組別</th><th>性別</th><th>年齡組</th>
+        <th>狀態</th></tr></thead><tbody><tr><td>12345</td><td>Runner B</td><td>HM</td>
+        <td>女</td><td>—</td><td>無完賽時間</td></tr></tbody></table>'''
+        rows, count = racelog.parse_page(page, '108', 'HM')
+        self.assertEqual(count, 1)
+        self.assertEqual(rows[0]['背號'], '12345')
+        self.assertFalse(rows[0]['排名資格'])
+
+    def test_racelog_rejects_wrong_event_and_count_mismatch(self):
+        with self.assertRaisesRegex(ValueError, 'different event'):
+            racelog.parse_page(self.racelog_page().replace('value="108"', 'value="109"'), '108', 'HM')
+        with self.assertRaisesRegex(ValueError, 'row count mismatch'):
+            racelog.parse_page(self.racelog_page(count='2', timed='2'), '108', 'HM')
+
+    def test_racelog_discovers_categories_and_maps_by_distance(self):
+        page = '''<form><input name="id" value="108"></form>
+        <a href="event.php?id=108&amp;category=426">MA <small>10</small></a>
+        <a href="event.php?id=108&amp;category=427">21K半程組 <small>20</small></a>
+        <a href="event.php?id=108&amp;category=428">10KM <small>30</small></a>'''
+        categories = racelog.discover_categories(
+            page, 'https://www.racelog.tw/event.php?id=108', '108', ['全馬', '半馬', '十公里'],
+            {'全馬': 42.195, '半馬': 21.0975, '十公里': 10})
+        self.assertEqual(categories, {'426': '全馬', '427': '半馬', '428': '十公里'})
+
+    def test_racelog_event_does_not_enter_bravelog_audit_flow(self):
+        self.assertFalse(is_bravelog({'result_source': 'racelog',
+                                     'source_url': 'https://www.racelog.tw/event.php?id=108',
+                                     'bravelog_filters': {'1': 'HM'}}))
+
     def test_brave_missing_pagination_rejected(self):
         with self.assertRaisesRegex(ValueError, 'pagination'):
             brave.parse_page('no results', '123', '21K')

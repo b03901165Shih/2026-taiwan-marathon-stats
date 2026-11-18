@@ -2,7 +2,7 @@
 
 [開啟網頁](https://b03901165shih.github.io/2026-taiwan-marathon-stats/)
 
-收錄 2025–2026 年的 23 場路跑賽事、54 個有有效成績的賽別。輸入完賽時間可查排名與 PR（超越百分比），也能由 PR 反查時間，或比較不同賽事中相同距離的成績分布。
+收錄 2025–2026 年的 23 場路跑賽事、54 個賽別。輸入完賽時間可查排名與 PR（超越百分比），也能由 PR 反查時間，或比較不同賽事中相同距離的成績分布。
 
 > 本工具以大會時間計算。BraveLog 來源需有正總排名及有效大會時間，並完成來源查核；官方敘獎可能採淨時間或其他規則，試算不等於頒獎名次。
 
@@ -39,6 +39,8 @@ PR 不把同秒者計入超越人數。相同 PR 是相同相對位置，不是�
 
 新增 BraveLog 賽事只需填設定、執行 `python audit_bravelog.py --event-id 賽事ID`；同一指令完成匯入、查核、前端轉檔與查核進度文件更新。缺少查核或資料未同步的場次會暫停載入。GitHub 的驗證流程會在 push／PR 檢查來源憑據與全部分組時間，未完成全場查核時不會通過；本機加入流程仍需先核對實際來源。
 
+RaceLog 來源使用 `python scrap_racelog.py --event-id 賽事ID`，接著執行 `python extract_excel_result.py --event-id 賽事ID`。匯入器會自動發現組別、依組名或賽事距離對應，並核對頁面列數與背號；無時間列保留在 Excel、標記不列入統計。
+
 個人頁模式讀取所有原始列，包含列表無時間者，避免漏掉個人頁仍有正式成績的紀錄；查核數不足原始列數時不能標成完成。
 
 來源總排名為0的紀錄不納入排名。有效成績若未提供分組，顯示「未提供分組」，保留於全體時間統計，不推定性別或年齡。
@@ -57,6 +59,8 @@ PR 不把同秒者計入超越人數。相同 PR 是相同相對位置，不是�
 | 2025 | 寶礦力路跑 | 21K、10K，個人及團隊競賽組分開 |
 | 2025 | 統一發票盃路跑活動 | 10K、半馬 |
 | 2025 | 長榮航空馬拉松 | 10K、半馬、全馬 |
+| 2026 | 長榮航空馬拉松 | 10K、半馬、全馬（RaceLog，來源待補） |
+| 2026 | 第十二屆電器盃節能公益路跑 | 21K、10K（RaceLog，來源待補；4K無晶片計時） |
 | 2025 | 台北馬拉松 | 半馬、全馬 |
 | 2026 | 渣打台北公益馬拉松 | 11K、半馬、全馬 |
 | 2026 | 臺南古都國際半程馬拉松 | 10K、半馬 |
@@ -72,8 +76,6 @@ PR 不把同秒者計入超越人數。相同 PR 是相同相對位置，不是�
 | 2026 | 麗晨臺中國際馬拉松（1月11日） | 42.195K、21K、10K、3K |
 | 2026 | 臺中城市半程馬拉松 | 21K、10K |
 | 2026 | 高雄富邦馬拉松 | 42.195K、21.0975K，一般個人成績 |
-| 2026 | 長榮航空馬拉松 | 10K、半馬、全馬（RaceLog，來源待補） |
-| 2026 | 第十二屆電器盃節能公益路跑 | 21K、10K（RaceLog，來源待補；4K無晶片計時） |
 | 2026 | ZEPRO RUN 台中場 | 21K、10K、3.5K |
 | 2026 | 新北市萬金石馬拉松 | 42.195K、10K |
 
@@ -100,6 +102,7 @@ events_config.json        賽事與距離設定
 data/event-catalog.js     自動產生的載入清單及年齡設定
 scrap_result.py           舊指令相容入口，改用完整資格查核流程
 scrap_irunner.py          依設定匯入 iRunner 個人成績
+scrap_racelog.py          自動發現 RaceLog 組別並匯入完整成績列表
 scrap_bravelog.py         依設定匯入 BraveLog 公開排名
 qualify_run2pix.py        依正式排名報表核對資格、保留原始計時值
 audit_bravelog.py         BraveLog 完整匯入與排名資格查核入口
@@ -115,7 +118,7 @@ CLAUDE.md                 永久協作規範（每次修改同步相關 .md）
 
 ## 資料更新
 
-依來源選用 iRunner、BraveLog、全統或 PDF 匯入程式產生 Excel；`extract_excel_result.py` 依設定轉成 `data/` 的 JS，並自動產生載入清單。新增同供應商賽事只要改設定、匯入，再執行 `python extract_excel_result.py --event-id 新ID`；只更新名稱、日期、距離、說明或年齡時執行 `python extract_excel_result.py --catalog-only`，不需 Excel 或 pandas。完整操作見 [`WORKFLOW.md`](WORKFLOW.md)。
+依來源選用 iRunner、RaceLog、BraveLog、全統或 PDF 匯入程式產生 Excel；`extract_excel_result.py` 依設定轉成 `data/` 的 JS，並自動產生載入清單。新增同供應商賽事只要改設定、匯入，再執行 `python extract_excel_result.py --event-id 新ID`；只更新名稱、日期、距離、說明或年齡時執行 `python extract_excel_result.py --catalog-only`，不需 Excel 或 pandas。完整操作見 [`WORKFLOW.md`](WORKFLOW.md)。
 
 原始 Excel 含跑者姓名與背號，僅保留在本機並由 `.gitignore` 排除；前端查詢使用 JS，不需下載 Excel。完整驗證命令（含 iRunner 匯入測試）見 [WORKFLOW.md](WORKFLOW.md#修改後驗證與文件同步)。
 

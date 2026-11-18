@@ -191,6 +191,9 @@ def build_sorted_seconds(group_seconds: dict[tuple[str, str], list[int]]) -> dic
 # ========= 🚀 擴充性最佳方案：Metadata 結構 =========
 def create_metadata(event_config: dict) -> dict:
     """建立標準化 metadata"""
+    source_url = (event_config.get("racelog_source_url")
+                  if event_config.get("result_source") == "racelog"
+                  else event_config.get("source_url", ""))
     metadata = {
         "event_id": event_config["id"],
         "event_name": event_config["name"],
@@ -209,7 +212,7 @@ def create_metadata(event_config: dict) -> dict:
 
     for optional_key in ("source_url", "status", "notes", "group_age_ranges", "group_age_source"):
         if optional_key in event_config:
-            metadata[optional_key] = event_config[optional_key]
+            metadata[optional_key] = source_url if optional_key == "source_url" else event_config[optional_key]
 
     return metadata
 
@@ -319,6 +322,15 @@ def load_event_configs(config_path: str | Path = DEFAULT_EVENT_CONFIG_PATH) -> l
                 or len(set(filters.values())) != len(filters)
                 or set(filters.values()) != set(event["race_types"])):
                 raise ValueError(f"{event['id']} irunner_filters 必須逐一對應所有 race_types")
+        if event.get("result_source") == "racelog":
+            source = event.get("racelog_source_url", event.get("source_url", ""))
+            if not source.startswith("https://www.racelog.tw/event.php?") and not source.startswith("https://racelog.tw/event.php?"):
+                raise ValueError(f"{event['id']} RaceLog 必須設定 event.php HTTPS URL")
+            filters = event.get("racelog_filters", {})
+            if (not isinstance(filters, dict)
+                    or any(not isinstance(k, str) or not k or v not in event["race_types"] for k, v in filters.items())
+                    or len(set(filters.values())) != len(filters)):
+                raise ValueError(f"{event['id']} racelog_filters 必須以來源組別對應唯一的 race_type")
         from ranking_validation import is_bravelog
         if is_bravelog(event):
             filters = event.get("bravelog_filters", {})
@@ -364,9 +376,12 @@ def output_catalog(events: list[dict], config_dir: Path):
         filename = f"data/{event['id']}_data.js"
         if not (config_dir / filename).is_file():
             continue
+        source_url = (event.get("racelog_source_url")
+                      if event.get("result_source") == "racelog"
+                      else event.get("source_url", ""))
         metadata = {"event_id": event["id"], "event_name": event["name"],
                     "event_date": event["date"], "race_distances_km": event["race_distances_km"],
-                    "source_url": event.get("source_url", ""),
+                    "source_url": source_url,
                     "notes": event.get("notes", ""),
                     "group_age_ranges": event.get("group_age_ranges", {}),
                     "group_age_source": event.get("group_age_source", "")}

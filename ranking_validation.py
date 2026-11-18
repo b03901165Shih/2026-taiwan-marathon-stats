@@ -9,6 +9,8 @@ VERSION = 1
 
 def is_bravelog(event):
     from urllib.parse import urlsplit
+    if event.get('result_source') == 'racelog':
+        return False
     host = urlsplit(event.get('source_url', '')).hostname
     return (bool(event.get('bravelog_source_url')) or host in ('www.bravelog.tw', 'bravelog.tw', 'www.run2pix.com', 'run2pix.com')
             or bool(event.get('bravelog_filters')))
