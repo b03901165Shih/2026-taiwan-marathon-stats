@@ -414,6 +414,114 @@ window.RunEventCatalog = [
     }
   },
   {
+    "src": "data/2025_hsinchu_city_marathon_data.js",
+    "requires_ranking_audit": false,
+    "ranking_audit": null,
+    "metadata": {
+      "event_id": "2025_hsinchu_city_marathon",
+      "event_name": "2025 新竹城市馬拉松",
+      "event_date": "2025-11-16",
+      "race_distances_km": {
+        "全程馬拉松組": 42.195,
+        "半程馬拉松組": 21,
+        "健康樂跑組": 9,
+        "高級中學競賽組": 9,
+        "休閒組": 4,
+        "中小學競賽組": 4,
+        "超慢跑組": 4
+      },
+      "source_url": "https://irunner.biji.co/track/1479/results",
+      "notes": "依 iRunner 個人總排名與大會時間收錄 12,135 筆有效成績。各組依簡章距離設定，半馬為 21 公里。9K 與 4K 各組分開計算。半馬團體加總成績不納入。",
+      "group_age_ranges": {
+        "全程馬拉松組": {
+          "男A組": [
+            60,
+            null
+          ],
+          "男B組": [
+            50,
+            59
+          ],
+          "男C組": [
+            40,
+            49
+          ],
+          "男D組": [
+            30,
+            39
+          ],
+          "男E組": [
+            0,
+            29
+          ],
+          "女A組": [
+            60,
+            null
+          ],
+          "女B組": [
+            50,
+            59
+          ],
+          "女C組": [
+            40,
+            49
+          ],
+          "女D組": [
+            30,
+            39
+          ],
+          "女E組": [
+            0,
+            29
+          ]
+        },
+        "半程馬拉松組": {
+          "男A組": [
+            60,
+            null
+          ],
+          "男B組": [
+            50,
+            59
+          ],
+          "男C組": [
+            40,
+            49
+          ],
+          "男D組": [
+            30,
+            39
+          ],
+          "男E組": [
+            0,
+            29
+          ],
+          "女A組": [
+            60,
+            null
+          ],
+          "女B組": [
+            50,
+            59
+          ],
+          "女C組": [
+            40,
+            49
+          ],
+          "女D組": [
+            30,
+            39
+          ],
+          "女E組": [
+            0,
+            29
+          ]
+        }
+      },
+      "group_age_source": "https://irunner.biji.co/HSINCHUCITY2025?page=4081"
+    }
+  },
+  {
     "src": "data/2026_panasonic_tpe_data.js",
     "requires_ranking_audit": true,
     "ranking_audit": {

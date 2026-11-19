@@ -10,7 +10,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, build_opener, HTTPCookieProcessor
 
-from extract_excel_result import load_event_configs
+from extract_excel_result import load_event_configs, time_str_to_seconds
 
 
 class TextParser(HTMLParser):
@@ -73,11 +73,22 @@ def fetch_results(event, page_size=500):
                 if key in seen:
                     raise ValueError(f"{race} 分頁出現重複號碼布，拒絕產生不完整資料")
                 seen.add(key)
-                rows.append({"姓名": text(name_html), "背號": bib, "賽別": race,
-                             "賽事類型": race, "分組": text(item["ItemGroup"]),
-                             "完賽時間": text(item["OfficailTime"]),
-                             "晶片時間": text(item.get("NetTime")),
-                             "來源總排名": item.get("TotalRank")})
+                official_time = text(item["OfficailTime"])
+                rank = item.get("TotalRank")
+                row = {"姓名": text(name_html), "背號": bib, "賽別": race,
+                       "賽事類型": race, "分組": text(item["ItemGroup"]),
+                       "完賽時間": official_time, "晶片時間": text(item.get("NetTime")),
+                       "來源總排名": rank}
+                if event.get("irunner_require_rank"):
+                    rank_text = str(rank).strip()
+                    try:
+                        seconds = time_str_to_seconds(official_time)
+                    except ValueError:
+                        seconds = 0
+                    row["排名資格"] = (re.fullmatch(r"[0-9]+", rank_text) is not None
+                                    and int(rank_text) > 0
+                                    and seconds > 0)
+                rows.append(row)
             start += len(batch)
             draw += 1
             time.sleep(.3)

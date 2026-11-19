@@ -55,6 +55,8 @@ python extract_excel_result.py --event-id 2025_pocari_run
 
 族群選單依來源實際提供的性別顯示，單純「男／女」分組不重複列入其他原始分組；團隊原始分組不含性別時不推估性別。
 
+新竹城市馬拉松使用 `python scrap_irunner.py --event-id 2025_hsinchu_city_marathon`，再以相同 ID 執行轉檔。設定 `irunner_require_rank: true` 時，匯入器會標記正總排名且大會時間有效的列，只有這些列供網站試算。七個個人組別依簡章距離各自匯入，其中半馬設定為 21 公里。全馬、半馬的歲數對照採用 [2025 官方簡章](https://irunner.biji.co/HSINCHUCITY2025?page=4081)。
+
 ### RaceLog、BraveLog、全統及官方 PDF
 
 各來源都沿用「填設定 → 取得本機 Excel → 轉成網頁資料」，不需要逐場修改程式。安裝 Excel 依賴：`python -m pip install pandas openpyxl`；只有 PDF 來源額外需要 `pypdf`。
